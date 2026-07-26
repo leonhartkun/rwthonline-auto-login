@@ -1,9 +1,11 @@
+import { rwth_host_from_url } from "./log_host.mjs";
+
 const MAX_LOG_ENTRIES = 50;
 const NATIVE_HOST = "com.rwthonline.auto_login";
 
 async function appendLog(text, url) {
   const { log = [] } = await chrome.storage.local.get("log");
-  log.unshift({ time: Date.now(), text, url });
+  log.unshift({ time: Date.now(), text, url: rwth_host_from_url(url) });
   await chrome.storage.local.set({ log: log.slice(0, MAX_LOG_ENTRIES) });
 }
 

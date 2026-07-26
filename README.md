@@ -15,6 +15,7 @@ RWTHonline Auto Login 是一个独立的 Chrome 扩展，用于减少支持的 R
 之后访问支持的 RWTH 登录页时，扩展会自动处理已配置的登录步骤。需要修改账号或 Token 时，从扩展菜单选择“重新配置账号与 Token”。
 
 完整说明见 [使用说明](USAGE.md)。数据处理方式见 [隐私政策](PRIVACY.md) 和 [用户声明](USER_NOTICE.md)。
+商店权限的逐项原因见 [单一用途与权限说明](PERMISSIONS.md)。
 
 ## 数据与权限
 

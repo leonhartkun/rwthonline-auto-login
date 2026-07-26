@@ -37,6 +37,29 @@ Before saving credentials, the setup page shows the local-storage notice and req
 - Privacy policy URL: https://github.com/leonhartkun/rwthonline-auto-login/blob/main/PRIVACY.md
 - User notice URL: https://github.com/leonhartkun/rwthonline-auto-login/blob/main/USER_NOTICE.md
 - Usage instructions URL: https://github.com/leonhartkun/rwthonline-auto-login/blob/main/USAGE.md
+- Permission details URL: https://github.com/leonhartkun/rwthonline-auto-login/blob/main/PERMISSIONS.md
+
+## Single purpose description
+
+RWTHonline Auto Login uses user-configured credentials and TOTP information stored in the local operating-system credential vault to complete the required steps on supported RWTH Aachen sign-in pages.
+
+## Permission justification text
+
+### Native Messaging
+
+Used only to communicate with the user-installed local helper. The helper stores the RWTH username, password, and TOTP secret in macOS Keychain or Windows Credential Manager and returns only the credentials or current TOTP code needed for a supported RWTH sign-in. It does not access arbitrary files or upload data.
+
+### Storage
+
+Used only for up to 50 local, user-visible activity-log entries containing time, automation action, and RWTH host name. Credentials and TOTP secrets are not stored in Chrome Storage.
+
+### Tabs
+
+Used only to close the extension's own onboarding tab after configuration succeeds. It is not used to read browsing history, enumerate tabs, or access other tab content.
+
+### Host permission: `https://*.rwth-aachen.de/*`
+
+Used only to run the sign-in automation on RWTH Aachen domains: identify SSO entry points on RWTH pages and fill the configured credentials, Token selection, and current TOTP code on `sso.rwth-aachen.de`. The extension does not run on any other website.
 
 ## Promotional assets
 
