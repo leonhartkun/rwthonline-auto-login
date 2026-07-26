@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="440" height="280" viewBox="0 0 440 280">
+  <rect width="440" height="280" fill="#00549f"/>
+  <path d="M368 0h72v72Z" fill="#ffffff"/>
+  <text x="34" y="172" fill="#ffffff" font-family="Arial Black, Arial, sans-serif" font-size="154" font-weight="900">R</text>
+  <path d="M206 74h172" stroke="#ffffff" stroke-opacity=".42" stroke-width="2"/>
+  <text x="206" y="112" fill="#ffffff" font-family="Arial, sans-serif" font-size="18" font-weight="700" letter-spacing="1.2">RWTHONLINE</text>
+  <text x="206" y="157" fill="#ffffff" font-family="Arial Black, Arial, sans-serif" font-size="29" font-weight="900">AUTO LOGIN</text>
+  <text x="206" y="193" fill="#dbeafb" font-family="Arial, sans-serif" font-size="17">Local. Private. Ready.</text>
+  <text x="34" y="244" fill="#dbeafb" font-family="Arial, sans-serif" font-size="14">Your RWTH sign-in, kept on your device.</text>
+</svg>

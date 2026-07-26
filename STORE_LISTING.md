@@ -8,6 +8,16 @@ RWTHonline Auto Login
 
 Locally completes RWTH sign-in using your own credentials and TOTP Token.
 
+## Description text for the Chrome Web Store
+
+RWTHonline Auto Login helps you complete supported RWTH Aachen sign-in steps without repeatedly entering your username, password, and Token code.
+
+During one-time setup, enter your own RWTH username and password and select your own Token QR-code image from this device. The QR code is decoded locally. A separately installed, open-source helper stores the credentials in macOS Keychain or Windows Credential Manager and generates the required TOTP code locally when needed.
+
+Your QR image, credentials, TOTP secret, generated codes, and activity log are not sent to the developer or any third party. The extension only operates on RWTH Aachen domains needed for sign-in. It does not run on other websites.
+
+You can update your configuration any time from the extension menu. This is an independent project and is not affiliated with or endorsed by RWTH Aachen University.
+
 ## Detailed description
 
 RWTHonline Auto Login helps you sign in to supported RWTH Aachen websites without repeatedly typing your credentials and TOTP code.
@@ -27,6 +37,11 @@ Before saving credentials, the setup page shows the local-storage notice and req
 - Privacy policy URL: https://github.com/leonhartkun/rwthonline-auto-login/blob/main/PRIVACY.md
 - User notice URL: https://github.com/leonhartkun/rwthonline-auto-login/blob/main/USER_NOTICE.md
 - Usage instructions URL: https://github.com/leonhartkun/rwthonline-auto-login/blob/main/USAGE.md
+
+## Promotional assets
+
+- Small promotional tile: `store_assets/small_promo_440x280.png`
+- Large promotional tile: `store_assets/large_promo_1400x560.png`
 
 ## Privacy disclosure answers
 

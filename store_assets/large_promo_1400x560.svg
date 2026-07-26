@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1400" height="560" viewBox="0 0 1400 560">
+  <rect width="1400" height="560" fill="#00549f"/>
+  <path d="M1260 0h140v140Z" fill="#ffffff"/>
+  <path d="M620 118h570" stroke="#ffffff" stroke-opacity=".42" stroke-width="3"/>
+  <text x="170" y="390" fill="#ffffff" font-family="Arial Black, Arial, sans-serif" font-size="340" font-weight="900">R</text>
+  <text x="620" y="210" fill="#ffffff" font-family="Arial, sans-serif" font-size="30" font-weight="700" letter-spacing="3">RWTHONLINE</text>
+  <text x="620" y="305" fill="#ffffff" font-family="Arial Black, Arial, sans-serif" font-size="74" font-weight="900">AUTO LOGIN</text>
+  <text x="624" y="362" fill="#dbeafb" font-family="Arial, sans-serif" font-size="28">A faster RWTH sign-in, kept on your device.</text>
+  <text x="624" y="424" fill="#ffffff" font-family="Arial, sans-serif" font-size="23">Local credentials  •  Local TOTP  •  No data upload</text>
+  <text x="170" y="482" fill="#dbeafb" font-family="Arial, sans-serif" font-size="20">Independent project · Not affiliated with RWTH Aachen University</text>
+</svg>
