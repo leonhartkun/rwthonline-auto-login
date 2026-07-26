@@ -1,42 +1,42 @@
 # RWTHonline Auto Login
 
-Chrome 扩展：首次设置时输入自己的 RWTH 用户名和密码，并从本地选择自己的 TOTP Token 二维码图片。扩展仅在本机解析二维码、保存设置并生成验证码；之后在支持的 RWTH 登录页自动完成登录。
+RWTHonline Auto Login 是一个独立的 Chrome 扩展，用于减少支持的 RWTH Aachen 登录流程中的重复输入。首次设置后，它会在 RWTH 登录页使用你的本机凭据和当前 TOTP 验证码完成填写。
 
-## 给用户的安装方式
+它不是 RWTH Aachen University 的官方产品，也未获得其背书。
 
-正式发布后，在 Chrome 网上应用店安装扩展，点击工具栏中的扩展图标，再点击“设置账号与 Token”。在初始化页：
+## 安装
 
-1. 输入自己的 RWTH 用户名和密码。
-2. 从本地选择自己的 Token 二维码截图。
-3. 点击“保存并启用自动登录”。
+1. 从 Chrome 网上应用店安装扩展。
+2. 打开扩展的“设置账号与 Token”页面。
+3. 按页面提示安装一次本机助手。助手开源，只负责访问 macOS Keychain 或 Windows Credential Manager。
+4. 输入自己的 RWTH 用户名和密码，并从本机选择自己的 Token 二维码图片。
+5. 阅读并确认隐私政策与用户声明，然后保存。
 
-二维码、密码与 TOTP 密钥仅保存在当前设备的 Chrome 扩展本地存储中；不会上传到开发者或第三方，也不会通过 Chrome 同步到其他设备。
+之后访问支持的 RWTH 登录页时，扩展会自动处理已配置的登录步骤。需要修改账号或 Token 时，从扩展菜单选择“重新配置账号与 Token”。
+
+完整说明见 [使用说明](USAGE.md)。数据处理方式见 [隐私政策](PRIVACY.md) 和 [用户声明](USER_NOTICE.md)。
+
+## 数据与权限
+
+- 账号、密码和 TOTP 密钥保存在本机系统保险库：macOS Keychain 或 Windows Credential Manager。
+- Token 二维码只在本机读取；扩展不会上传凭据、二维码、验证码或活动记录。
+- 扩展仅匹配 RWTH Aachen 域名，不会在其他网站运行。
+- 本机助手通过 Chrome Native Messaging 与扩展通信；它不读取网页，也不向开发者发送数据。
+
+## 支持
+
+请先查看 [支持信息](SUPPORT.md)。Bug 报告和功能建议可提交到 [GitHub Issues](https://github.com/leonhartkun/rwthonline-auto-login/issues)。
 
 ## 开发与验证
 
 ```sh
-node --test extension/tests/totp.test.mjs extension/tests/credential_store.test.mjs
+node --test extension/tests/onboarding_ui.test.mjs extension/tests/privacy_notice.test.mjs extension/tests/icon_design.test.mjs extension/tests/totp.test.mjs
 node --check extension/onboarding.js
-```
-
-在 Chrome 地址栏打开 `chrome://extensions`，启用开发者模式，选择“加载已解压的扩展程序”，并选择 `extension/` 文件夹。点击扩展图标可打开设置页面；测试完毕后可在该页面删除本地数据。
-
-## 商店打包
-
-执行：
-
-```sh
 ./scripts/package_extension.sh
 ```
 
-生成的 `dist/rwthonline_auto_login.zip` 只包含扩展运行所需的文件。它不包含开发者私钥、原生助手、日志或测试文件。
+生成的 `dist/rwthonline_auto_login.zip` 是 Chrome Web Store 上传包；它不包含开发者私钥、本机助手、日志或测试文件。
 
 ## 平台范围
 
 这是桌面版 Chrome 扩展。Chrome 网上应用店的扩展不能作为 iPhone 或 iPad 上的 Chrome 扩展安装。
-
-## 维护说明
-
-- RWTH 登录页面改版后，`extension/content_script.js` 中的页面选择器可能需要更新。
-- 用户可随时通过设置页更新账号、密码或二维码，或删除全部本地数据。
-- 此项目与 RWTH Aachen University 没有官方隶属或背书关系。
