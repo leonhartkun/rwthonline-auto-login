@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8" />
+<style>
+  body {
+    width: 320px;
+    max-height: 400px;
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, sans-serif;
+    font-size: 13px;
+    color: #222;
+  }
+  header {
+    padding: 10px 12px;
+    font-weight: 600;
+    border-bottom: 1px solid #eee;
+  }
+  ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    max-height: 340px;
+    overflow-y: auto;
+  }
+  li {
+    padding: 8px 12px;
+    border-bottom: 1px solid #f2f2f2;
+  }
+  .time {
+    color: #888;
+    font-size: 11px;
+  }
+  .empty {
+    padding: 16px 12px;
+    color: #888;
+  }
+  button {
+    width: calc(100% - 24px);
+    margin: 10px 12px;
+    padding: 8px;
+    border: 0;
+    border-radius: 6px;
+    background: #00549f;
+    color: white;
+    cursor: pointer;
+  }
+</style>
+</head>
+<body>
+  <header>RWTHonline Auto Login 日志</header>
+  <button id="open_onboarding" type="button">设置账号与 Token</button>
+  <ul id="log"></ul>
+  <script src="popup.js"></script>
+</body>
+</html>

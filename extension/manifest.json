@@ -1,0 +1,31 @@
+{
+  "manifest_version": 3,
+  "name": "RWTHonline Auto Login",
+  "version": "1.1.0",
+  "description": "Locally automates RWTH sign-in with your own credentials and TOTP token.",
+  "permissions": ["nativeMessaging", "storage"],
+  "host_permissions": [
+    "https://*.rwth-aachen.de/*"
+  ],
+  "background": {
+    "service_worker": "background.js",
+    "type": "module"
+  },
+  "action": {
+    "default_popup": "popup.html"
+  },
+  "options_ui": {
+    "page": "onboarding.html",
+    "open_in_tab": true
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://*.rwth-aachen.de/*"
+      ],
+      "js": ["content_script.js"],
+      "run_at": "document_idle",
+      "all_frames": true
+    }
+  ]
+}
