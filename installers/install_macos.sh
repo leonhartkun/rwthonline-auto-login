@@ -17,8 +17,9 @@ rm -rf "$install_dir/rwthonline_native_host"
 curl -fsSL "$release_url" -o "$archive_path"
 ditto -x -k "$archive_path" "$install_dir"
 rm -f "$archive_path"
-chmod 700 "$install_dir/rwthonline_native_host"
+helper_path="$install_dir/rwthonline_native_host/rwthonline_native_host"
+chmod 700 "$helper_path"
 cat > "$manifest_dir/com.rwthonline.auto_login.json" <<EOF
-{"name":"com.rwthonline.auto_login","description":"RWTHonline Auto Login credential helper","path":"$install_dir/rwthonline_native_host","type":"stdio","allowed_origins":["chrome-extension://$extension_id/"]}
+{"name":"com.rwthonline.auto_login","description":"RWTHonline Auto Login credential helper","path":"$helper_path","type":"stdio","allowed_origins":["chrome-extension://$extension_id/"]}
 EOF
 printf '%s\n' 'RWTHonline helper installed. Return to the extension settings page.'
