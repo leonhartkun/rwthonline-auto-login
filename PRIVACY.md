@@ -17,11 +17,13 @@ The QR-code image is decoded locally. The extension does not upload the image, c
 
 ## Storage and control
 
-Configuration and the activity log are stored in `chrome.storage.local` for the current Chrome profile. They are not stored in Chrome Sync. Users can remove all saved credentials and TOTP configuration in the extension's settings page; removing the extension also removes its local extension storage.
+The activity log is stored in `chrome.storage.local` for the current Chrome profile and is not stored in Chrome Sync. The username, password, and TOTP secret are stored by the separately installed local helper in the operating system credential vault: macOS Keychain or Windows Credential Manager. The extension receives them only when it needs to complete an RWTH sign-in or generate the current TOTP code.
+
+Users can replace the saved credentials and TOTP secret by running the extension's configuration flow again. Removing the extension removes the extension's local activity log; operating-system credential-vault entries remain under the user's control and can be removed through the credential manager.
 
 ## Permissions
 
-The extension uses `storage` to retain its local configuration and activity log. It uses access to RWTH Aachen domains solely to identify login pages and fill the user's saved credentials after the user has configured the extension.
+The extension uses `storage` to retain its local activity log, `nativeMessaging` solely to communicate with the local helper, and access to RWTH Aachen domains solely to identify RWTH sign-in pages and fill the user's saved credentials after the user has configured the extension. It does not run on non-RWTH domains.
 
 ## Contact
 

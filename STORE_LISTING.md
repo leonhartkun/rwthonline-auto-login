@@ -12,9 +12,9 @@ Locally completes RWTH sign-in using your own credentials and TOTP Token.
 
 RWTHonline Auto Login helps you sign in to supported RWTH Aachen websites without repeatedly typing your credentials and TOTP code.
 
-During one-time setup, enter your own RWTH username and password, then choose your own Token QR-code image from your device. The extension reads the QR code only locally, stores the configuration only in the current Chrome profile, and generates the required TOTP code locally when needed.
+During one-time setup, enter your own RWTH username and password, then choose your own Token QR-code image from your device. The extension reads the QR code only locally. A separately installed, open-source local helper stores the credentials in macOS Keychain or Windows Credential Manager and generates the required TOTP code locally when needed.
 
-Your QR image, credentials, TOTP secret, generated codes, and activity log are not sent to the developer or any third party. You can update or delete your local configuration at any time from the extension settings page.
+Your QR image, credentials, TOTP secret, generated codes, and activity log are not sent to the developer or any third party. You can update your local configuration at any time from the extension settings page.
 
 This is an independent project and is not affiliated with or endorsed by RWTH Aachen University.
 

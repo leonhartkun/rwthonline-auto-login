@@ -3,6 +3,9 @@
   "name": "RWTHonline Auto Login",
   "version": "1.1.0",
   "description": "Locally automates RWTH sign-in with your own credentials and TOTP token.",
+  "icons": {
+    "128": "assets/icon_128.png"
+  },
   "permissions": ["nativeMessaging", "storage", "tabs"],
   "host_permissions": [
     "https://*.rwth-aachen.de/*"
