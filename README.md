@@ -1,43 +1,134 @@
+<p align="center">
+  <img src="store_assets/large_promo_1400x560.png" alt="RWTHonline Auto Login" width="100%">
+</p>
+
+<p align="center">
+  <strong>中文</strong> · <a href="#english">English</a> · <a href="#deutsch">Deutsch</a>
+</p>
+
 # RWTHonline Auto Login
 
-RWTHonline Auto Login 是一个独立的 Chrome 扩展，用于减少支持的 RWTH Aachen 登录流程中的重复输入。首次设置后，它会在 RWTH 登录页使用你的本机凭据和当前 TOTP 验证码完成填写。
+> 一个独立的桌面 Chrome 扩展，帮助你在支持的 RWTH Aachen 登录页面上减少重复输入。
 
-它不是 RWTH Aachen University 的官方产品，也未获得其背书。
+## 中文
 
-## 安装
+### 它做什么
 
-1. 从 Chrome 网上应用店安装扩展。
-2. 打开扩展的“设置账号与 Token”页面。
-3. 按页面提示安装一次本机助手。助手开源，只负责访问 macOS Keychain 或 Windows Credential Manager。
-4. 输入自己的 RWTH 用户名和密码，并从本机选择自己的 Token 二维码图片。
-5. 阅读并确认隐私政策与用户声明，然后保存。
+首次配置后，扩展会在支持的 RWTH Aachen 登录流程中填写你的用户名、密码和当前 TOTP 验证码。它只在 RWTH Aachen 域名上运行，不会在其他网站扫描、读取或注入内容。
 
-之后访问支持的 RWTH 登录页时，扩展会自动处理已配置的登录步骤。需要修改账号或 Token 时，从扩展菜单选择“重新配置账号与 Token”。
+### 快速开始
 
-完整说明见 [使用说明](USAGE.md)。数据处理方式见 [隐私政策](PRIVACY.md) 和 [用户声明](USER_NOTICE.md)。
-商店权限的逐项原因见 [单一用途与权限说明](PERMISSIONS.md)。
+1. 从 Chrome 网上应用店安装扩展（商店版本正在审核中）。
+2. 打开扩展菜单，选择“设置账号与 Token”。
+3. 按页面提示安装一次开源本机助手；它只负责访问 macOS Keychain 或 Windows Credential Manager。
+4. 输入自己的 RWTH 用户名和密码，从本机选择自己的 Token 二维码图片。
+5. 阅读并确认数据处理提示，保存配置。
 
-## 数据与权限
+之后访问支持的 RWTH 登录页时，扩展会自动完成已配置的登录步骤。需要更换账号或 Token 时，从扩展菜单选择“重新配置账号与 Token”。
 
-- 账号、密码和 TOTP 密钥保存在本机系统保险库：macOS Keychain 或 Windows Credential Manager。
-- Token 二维码只在本机读取；扩展不会上传凭据、二维码、验证码或活动记录。
-- 扩展仅匹配 RWTH Aachen 域名，不会在其他网站运行。
-- 本机助手通过 Chrome Native Messaging 与扩展通信；它不读取网页，也不向开发者发送数据。
+### 隐私与范围
 
-## 支持
+- 用户名、密码和 TOTP 密钥保存在本机系统保险库中，不保存在 Chrome Sync。
+- Token 二维码只在本机解析；凭据、二维码、验证码和活动记录不会发送给开发者或第三方。
+- 扩展仅访问 RWTH Aachen 登录流程所需的页面。
+- 这是独立项目，不隶属或代表 RWTH Aachen University。
 
-请先查看 [支持信息](SUPPORT.md)。Bug 报告和功能建议可提交到 [GitHub Issues](https://github.com/leonhartkun/rwthonline-auto-login/issues)。
+详细步骤请看 [使用说明](USAGE.md)。数据处理请看 [隐私政策](PRIVACY.md)、[用户声明](USER_NOTICE.md) 与 [单一用途和权限说明](PERMISSIONS.md)。
 
-## 开发与验证
+### 支持与反馈
+
+遇到问题、发现兼容性变化或有功能建议，请先查看 [支持信息](SUPPORT.md)，再提交 [GitHub Issue](https://github.com/leonhartkun/rwthonline-auto-login/issues)。请不要在 Issue 中提交用户名、密码、二维码、TOTP 密钥、验证码或 Cookie。
+
+需要增加新的界面语言？欢迎在 Issue 中告诉开发者你需要的语言和使用场景。
+
+如果这个项目对你有帮助，欢迎给仓库点一个 Star；这能帮助更多 RWTH 用户找到它。
+
+---
+
+<a id="english"></a>
+
+## English
+
+### What it does
+
+After one-time setup, this independent desktop Chrome extension fills the configured username, password, and current TOTP code on supported RWTH Aachen sign-in flows. It runs only on RWTH Aachen domains and does not scan, read, or inject content on other websites.
+
+### Quick start
+
+1. Install the extension from the Chrome Web Store (the store listing is under review).
+2. Open the extension menu and select **Configure account and Token**.
+3. Install the open-source local helper once. It only accesses macOS Keychain or Windows Credential Manager.
+4. Enter your own RWTH username and password, then select your Token QR-code image from this device.
+5. Read and acknowledge the data-handling notice, then save the configuration.
+
+When you later visit a supported RWTH sign-in page, the extension completes the configured steps automatically. Use **Reconfigure account and Token** in the extension menu to update credentials or the Token.
+
+### Privacy and scope
+
+- The username, password, and TOTP secret are kept in the local operating-system credential vault, not in Chrome Sync.
+- The Token QR code is decoded locally. Credentials, QR codes, TOTP codes, and activity records are not sent to the developer or third parties.
+- The extension accesses only the RWTH Aachen pages needed for its sign-in function.
+- This is an independent project and is not affiliated with or endorsed by RWTH Aachen University.
+
+Read the [usage guide](USAGE.md), [Privacy Policy](PRIVACY.md), [User Notice](USER_NOTICE.md), and [single-purpose and permission details](PERMISSIONS.md) for full details.
+
+### Support and feedback
+
+For bugs, compatibility changes, or feature ideas, read the [support information](SUPPORT.md) and open a [GitHub Issue](https://github.com/leonhartkun/rwthonline-auto-login/issues). Never include credentials, QR codes, TOTP secrets, one-time codes, cookies, or session data in an issue.
+
+Need another interface language? Please contact the developer through an issue with the requested language and your use case.
+
+If the project is useful to you, a GitHub Star helps other RWTH users discover it.
+
+---
+
+<a id="deutsch"></a>
+
+## Deutsch
+
+### Was die Erweiterung macht
+
+Nach der einmaligen Einrichtung trägt diese unabhängige Desktop-Chrome-Erweiterung den konfigurierten Benutzernamen, das Passwort und den aktuellen TOTP-Code in unterstützte RWTH-Aachen-Anmeldeabläufe ein. Sie läuft ausschließlich auf RWTH-Aachen-Domains und liest oder verändert keine anderen Websites.
+
+### Schnellstart
+
+1. Installiere die Erweiterung aus dem Chrome Web Store (der Store-Eintrag wird derzeit geprüft).
+2. Öffne das Erweiterungsmenü und wähle **Konto und Token konfigurieren**.
+3. Installiere den quelloffenen lokalen Helfer einmalig. Er greift ausschließlich auf den macOS-Schlüsselbund oder die Windows-Anmeldeinformationsverwaltung zu.
+4. Gib deinen eigenen RWTH-Benutzernamen und dein Passwort ein und wähle das Token-QR-Bild von diesem Gerät aus.
+5. Lies den Hinweis zur Datenverarbeitung, bestätige ihn und speichere die Konfiguration.
+
+Beim späteren Aufruf einer unterstützten RWTH-Anmeldeseite führt die Erweiterung die konfigurierten Schritte automatisch aus. Über **Konto und Token neu konfigurieren** im Erweiterungsmenü kannst du Zugangsdaten oder Token aktualisieren.
+
+### Datenschutz und Geltungsbereich
+
+- Benutzername, Passwort und TOTP-Geheimnis bleiben im lokalen System-Schlüsselbund und werden nicht mit Chrome Sync synchronisiert.
+- Der Token-QR-Code wird lokal ausgewertet. Zugangsdaten, QR-Codes, TOTP-Codes und Aktivitätsprotokolle werden weder an den Entwickler noch an Dritte gesendet.
+- Die Erweiterung greift nur auf RWTH-Aachen-Seiten zu, die für die Anmeldefunktion erforderlich sind.
+- Dies ist ein unabhängiges Projekt und nicht mit der RWTH Aachen University verbunden oder von ihr unterstützt.
+
+Weitere Informationen findest du in der [Nutzungsanleitung](USAGE.md), der [Datenschutzerklärung](PRIVACY.md), dem [Nutzungshinweis](USER_NOTICE.md) und der [Erklärung zu Zweck und Berechtigungen](PERMISSIONS.md).
+
+### Unterstützung und Feedback
+
+Bei Fehlern, Änderungen der Kompatibilität oder Funktionswünschen lies bitte zuerst die [Support-Informationen](SUPPORT.md) und eröffne anschließend ein [GitHub Issue](https://github.com/leonhartkun/rwthonline-auto-login/issues). Bitte niemals Zugangsdaten, QR-Codes, TOTP-Geheimnisse, Einmalcodes, Cookies oder Sitzungsdaten in einem Issue veröffentlichen.
+
+Du benötigst eine weitere Oberflächensprache? Teile dem Entwickler bitte über ein Issue die gewünschte Sprache und den Anwendungsfall mit.
+
+Wenn dir das Projekt hilft, unterstützt ein GitHub Star dabei, dass weitere RWTH-Nutzer es finden.
+
+---
+
+## Development
 
 ```sh
-node --test extension/tests/onboarding_ui.test.mjs extension/tests/privacy_notice.test.mjs extension/tests/icon_design.test.mjs extension/tests/totp.test.mjs
+node --test extension/tests/*.test.mjs
 node --check extension/onboarding.js
 ./scripts/package_extension.sh
 ```
 
-生成的 `dist/rwthonline_auto_login.zip` 是 Chrome Web Store 上传包；它不包含开发者私钥、本机助手、日志或测试文件。
+`dist/rwthonline_auto_login.zip` is the Chrome Web Store upload package. It does not include the developer key, native helper, logs, or tests.
 
-## 平台范围
+## Platform scope
 
-这是桌面版 Chrome 扩展。Chrome 网上应用店的扩展不能作为 iPhone 或 iPad 上的 Chrome 扩展安装。
+This is a desktop Chrome extension. Chrome Web Store extensions cannot be installed as Chrome extensions on iPhone or iPad.
