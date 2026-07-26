@@ -24,12 +24,11 @@ This is an independent project and is not affiliated with or endorsed by RWTH Aa
 - Data sold: no.
 - Data transferred to third parties: no.
 - Data used outside the extension's core function: no.
-- Privacy policy: publish the content of `PRIVACY.md` at a public HTTPS URL before submission.
+- Privacy policy: https://github.com/leonhartkun/rwthonline-auto-login/blob/main/PRIVACY.md
 
 ## Submission checklist
 
 1. Register the Chrome Web Store publisher account and complete payment or verification prompts in the Developer Dashboard.
-2. Publish `PRIVACY.md` at a stable public HTTPS URL and replace the contact placeholder.
-3. Capture at least one clear screenshot of the setup page and one of the extension on a RWTH sign-in page, without any real usernames, passwords, QR codes, or TOTP codes visible.
-4. Upload `dist/rwthonline_auto_login.zip`.
-5. Complete the Privacy tab using the answers above, choose public or unlisted distribution, provide a support email, and submit for review.
+2. Capture at least one clear screenshot of the setup page and one of the extension on a RWTH sign-in page, without any real usernames, passwords, QR codes, or TOTP codes visible.
+3. Upload `dist/rwthonline_auto_login.zip`.
+4. Complete the Privacy tab using the answers above, choose public or unlisted distribution, provide the support email, and submit for review.

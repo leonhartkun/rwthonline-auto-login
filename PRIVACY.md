@@ -27,4 +27,4 @@ The extension uses `storage` to retain its local activity log, `nativeMessaging`
 
 ## Contact
 
-Before publication, replace this section with a monitored support email address and the publisher's legal contact details where required by the Chrome Web Store.
+For support or privacy questions, contact leonhartyu2005@gmail.com.
