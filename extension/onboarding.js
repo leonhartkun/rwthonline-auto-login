@@ -89,7 +89,8 @@ form.addEventListener("submit", async (event) => {
     }
     password_input.value = "";
     token_qr_input.value = "";
-    set_status("已保存到系统保险库。现在访问 RWTH 网站即可自动登录。", "success");
+    set_status("已保存。正在关闭设置页…", "success");
+    setTimeout(() => send_background({ action: "close_onboarding" }), 600);
   } catch (error) {
     set_status(error.message, "error");
   }

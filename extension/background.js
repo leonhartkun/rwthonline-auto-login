@@ -43,6 +43,14 @@ chrome.runtime.onMessage.addListener((message, sender, send_response) => {
       return;
     }
 
+    if (message.action === "close_onboarding") {
+      if (sender.tab?.id) {
+        await chrome.tabs.remove(sender.tab.id);
+      }
+      send_response({ ok: true });
+      return;
+    }
+
     if (message.action === "configure_credentials" || message.action === "get_helper_status") {
       send_response(await native_message(message));
       return;
