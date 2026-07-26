@@ -1,15 +1,8 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="128" height="128" viewBox="0 0 128 128">
-  <rect x="16" y="16" width="96" height="96" rx="25" fill="#00549f"/>
-  <path d="M88 27h9c2.8 0 5 2.2 5 5v9" fill="none" stroke="#f6c945" stroke-linecap="round" stroke-width="5"/>
-  <g id="identity-card">
-    <rect x="31" y="35" width="66" height="58" rx="8" fill="#f7fafc"/>
-    <rect x="31" y="35" width="66" height="10" rx="8" fill="#f6c945"/>
-    <circle cx="49" cy="61" r="8" fill="#9bb5cd"/>
-    <path d="M38 80c1.8-7.2 6-10.8 11-10.8S58.3 72.8 60 80" fill="#9bb5cd"/>
-    <path d="M68 58h17M68 66h13" fill="none" stroke="#c3d1dd" stroke-linecap="round" stroke-width="4"/>
-  </g>
-  <g id="keyhole" fill="#00549f">
-    <circle cx="84" cy="78" r="8"/>
-    <path d="M78.5 83.5h11L92 94H76z"/>
-  </g>
+  <defs>
+    <clipPath id="icon-shape"><rect x="14" y="14" width="100" height="100" rx="24"/></clipPath>
+  </defs>
+  <rect x="14" y="14" width="100" height="100" rx="24" fill="#00549f"/>
+  <text id="letter-r" x="31" y="94" fill="#ffffff" font-family="Arial Black, Arial, sans-serif" font-size="74" font-weight="900">R</text>
+  <path id="page-fold" d="M88 14h26v26Z" fill="#ffffff" clip-path="url(#icon-shape)"/>
 </svg>
