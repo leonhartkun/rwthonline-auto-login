@@ -11,7 +11,7 @@ function native_message(message) {
   return new Promise((resolve) => {
     chrome.runtime.sendNativeMessage(NATIVE_HOST, message, (response) => {
       if (chrome.runtime.lastError) {
-        resolve({ error: "本机助手尚未安装。请打开设置页按步骤安装。" });
+        resolve({ error: `无法连接本机助手：${chrome.runtime.lastError.message}` });
         return;
       }
       resolve(response || { error: "本机助手没有返回结果。" });
