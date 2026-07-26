@@ -5,52 +5,122 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>设置 RWTHonline Auto Login</title>
   <style>
-    :root { color: #17212b; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
-    body { margin: 0; background: #f7f9fb; }
-    main { max-width: 560px; margin: 40px auto; padding: 28px; background: white; border-radius: 12px; box-shadow: 0 6px 24px #17212b1c; }
-    h1 { margin-top: 0; font-size: 24px; }
-    p, label { line-height: 1.5; }
-    label { display: block; margin-top: 18px; font-weight: 600; }
-    input { box-sizing: border-box; width: 100%; margin-top: 6px; padding: 10px; border: 1px solid #aeb8c2; border-radius: 6px; font: inherit; }
-    .hint, #status { color: #52616f; font-size: 14px; }
-    #status { min-height: 22px; margin-top: 16px; }
+    :root { color: #1c2733; font-family: Inter, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif; }
+    * { box-sizing: border-box; }
+    body { margin: 0; min-width: 320px; background: #f3f5f7; }
+    .app_bar { height: 6px; background: #00549f; }
+    .setup_shell { width: min(920px, calc(100% - 40px)); margin: 42px auto; display: grid; grid-template-columns: 250px minmax(0, 1fr); border: 1px solid #d7dde3; background: #fff; }
+    .progress_panel { padding: 28px 24px; border-right: 1px solid #d7dde3; background: #fbfcfd; }
+    .brand { margin: 0 0 34px; color: #00549f; font-size: 14px; font-weight: 750; letter-spacing: .02em; }
+    .progress_panel h1 { margin: 0 0 8px; font-size: 21px; letter-spacing: -.02em; }
+    .progress_panel > p { margin: 0 0 26px; color: #65717c; font-size: 13px; line-height: 1.55; }
+    .steps { display: grid; gap: 18px; padding: 0; margin: 0; list-style: none; counter-reset: setup; }
+    .steps li { position: relative; padding-left: 34px; color: #54616d; font-size: 13px; line-height: 1.45; counter-increment: setup; }
+    .steps li::before { position: absolute; left: 0; top: -2px; width: 22px; height: 22px; border: 1px solid #b6c0ca; border-radius: 50%; color: #4b5b68; content: counter(setup); display: grid; place-items: center; font-size: 12px; font-weight: 700; }
+    .steps strong { display: block; color: #27333e; font-size: 13px; }
+    .local_note { margin-top: 34px; padding-top: 18px; border-top: 1px solid #dde3e8; color: #65717c; font-size: 12px; line-height: 1.55; }
+    .local_note strong { color: #3e4d5a; }
+    .setup_content { padding: 32px 36px 36px; }
+    .section_heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
+    .section_heading h2 { margin: 0; font-size: 20px; letter-spacing: -.02em; }
+    .section_heading p { margin: 0; color: #6c7781; font-size: 13px; }
+    #helper_setup { margin: 0 0 30px; padding: 16px 18px; border-left: 3px solid #f6c945; background: #faf8f0; }
+    .helper_title { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #26333f; font-size: 14px; font-weight: 700; }
+    .helper_title span { color: #68747e; font-size: 12px; font-weight: 500; }
+    #helper_setup p { margin: 8px 0 10px; color: #596673; font-size: 13px; line-height: 1.5; }
+    code { display: block; overflow-wrap: anywhere; margin: 10px 0 12px; padding: 10px 12px; border: 1px solid #d8d1b7; background: #fffdf5; color: #34424e; font: 12px/1.45 ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .helper_actions { display: flex; align-items: center; gap: 14px; }
+    a { color: #00549f; font-size: 13px; }
+    form { display: grid; gap: 18px; }
+    .field { display: grid; gap: 7px; }
+    label { color: #293641; font-size: 13px; font-weight: 700; }
+    input { width: 100%; min-height: 42px; border: 1px solid #bcc7d1; border-radius: 4px; background: #fff; color: #1c2733; font: inherit; padding: 9px 10px; }
+    input:focus { border-color: #00549f; outline: 2px solid #00549f24; outline-offset: 1px; }
+    .qr_upload { display: grid; gap: 8px; padding: 16px; border: 1px dashed #8fa2b3; background: #fafcfd; }
+    .qr_upload label { display: block; }
+    .qr_upload p { margin: 0; color: #66737e; font-size: 12px; line-height: 1.5; }
+    .qr_upload input { min-height: auto; padding: 7px; background: #fff; font-size: 13px; }
+    .consent { display: flex; align-items: flex-start; gap: 9px; color: #56636e; font-size: 12px; line-height: 1.55; }
+    .consent input { flex: 0 0 auto; width: 16px; min-height: 16px; margin: 2px 0 0; padding: 0; }
+    .consent a { font-size: inherit; }
+    #status { min-height: 20px; color: #5f6c77; font-size: 13px; line-height: 1.5; }
     .error { color: #b42318 !important; }
     .success { color: #087443 !important; }
-    .actions { display: flex; gap: 12px; margin-top: 24px; }
-    button { padding: 10px 14px; border: 0; border-radius: 6px; background: #00549f; color: white; font: inherit; cursor: pointer; }
-    button.secondary { background: #647482; }
-    #helper_setup { margin: 20px 0; padding: 16px; border: 1px solid #c9d7e6; border-radius: 8px; background: #f2f7fb; }
-    code { display: block; overflow-wrap: anywhere; margin: 10px 0; padding: 10px; background: #17212b; color: #fff; border-radius: 6px; }
+    .actions { display: flex; align-items: center; gap: 12px; padding-top: 4px; }
+    button { min-height: 38px; border: 1px solid #00549f; border-radius: 4px; background: #00549f; color: #fff; cursor: pointer; font: inherit; font-size: 13px; font-weight: 650; padding: 8px 14px; }
+    button:hover { background: #004680; }
+    button.secondary { border-color: #aab6c0; background: #fff; color: #42515e; }
+    @media (max-width: 760px) {
+      .setup_shell { width: min(100% - 24px, 560px); grid-template-columns: 1fr; margin: 12px auto 28px; }
+      .progress_panel { border-right: 0; border-bottom: 1px solid #d7dde3; padding: 24px; }
+      .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
+      .steps li { padding-left: 0; padding-top: 28px; }
+      .steps li::before { top: 0; }
+      .local_note { display: none; }
+      .setup_content { padding: 26px 24px 30px; }
+    }
+    @media (max-width: 480px) {
+      .steps { grid-template-columns: 1fr; }
+      .section_heading, .helper_title { align-items: flex-start; flex-direction: column; gap: 5px; }
+      .helper_actions { align-items: flex-start; flex-direction: column; }
+    }
   </style>
 </head>
 <body>
-  <main>
-    <h1>初始化 RWTHonline Auto Login</h1>
-    <p>扩展不会上传账号密码或 Token。为了让浏览器在不重复询问密码的情况下自动登录，它使用一个开源本机助手，把凭据保存到 macOS 钥匙串或 Windows 凭据管理器。</p>
-    <section id="helper_setup">
-      <strong>第一步：安装本机助手</strong>
-      <p>助手只做三件事：保存你的凭据到系统保险库、生成当前 TOTP、把登录所需值返回给本扩展。它不会访问其他网站，也不会联网发送数据。你可以先在 GitHub 查看其完整源代码。</p>
-      <code id="install_command"></code>
-      <button id="copy_install_command" type="button">复制安装命令</button>
-      <a id="source_link" target="_blank" rel="noreferrer">查看 GitHub 源代码与安装说明</a>
-    </section>
-    <form id="onboarding_form">
-      <label for="username">RWTH 用户名</label>
-      <input id="username" name="username" autocomplete="username" required>
+  <div class="app_bar"></div>
+  <main class="setup_shell">
+    <aside class="progress_panel" aria-label="设置步骤">
+      <p class="brand">RWTHONLINE AUTO LOGIN</p>
+      <h1>首次设置</h1>
+      <p>完成一次配置，之后在 RWTH 登录页自动填写。</p>
+      <ol class="steps">
+        <li><strong>安装助手</strong>连接系统钥匙串或凭据管理器。</li>
+        <li><strong>添加账号</strong>输入你自己的 RWTH 凭据。</li>
+        <li><strong>导入 Token</strong>选择设备上的二维码图片。</li>
+      </ol>
+      <p class="local_note"><strong>本地处理。</strong><br>二维码只在此设备解析；账号与 Token 不会发送到开发者或其他服务。</p>
+    </aside>
 
-      <label for="password">RWTH 密码</label>
-      <input id="password" name="password" type="password" autocomplete="current-password" required>
-
-      <label for="token_qr">Token 二维码图片</label>
-      <input id="token_qr" name="token_qr" type="file" accept="image/*" required>
-      <p class="hint">从设备本地选择你的 Token 二维码截图。扩展只读取其中的 TOTP 配置，并通过助手写入系统保险库。</p>
-
-      <div id="status" role="status" aria-live="polite"></div>
-      <div class="actions">
-        <button type="submit">保存并启用自动登录</button>
-        <button id="clear" class="secondary" type="button">删除本地数据</button>
+    <section class="setup_content" aria-labelledby="setup_title">
+      <div class="section_heading">
+        <h2 id="setup_title">账号与 Token</h2>
+        <p>约需 2 分钟</p>
       </div>
-    </form>
+
+      <section id="helper_setup" aria-label="本机助手安装">
+        <div class="helper_title">先安装本机助手 <span>只需一次</span></div>
+        <p>它把账号信息写入系统保险库，并在需要时生成验证码。不会读取其他网站，也不会上传你的数据。</p>
+        <code id="install_command"></code>
+        <div class="helper_actions">
+          <button id="copy_install_command" type="button" class="secondary">复制安装命令</button>
+          <a id="source_link" target="_blank" rel="noreferrer">查看源代码和安装说明</a>
+        </div>
+      </section>
+
+      <form id="onboarding_form">
+        <div class="field">
+          <label for="username">RWTH 用户名</label>
+          <input id="username" name="username" autocomplete="username" required>
+        </div>
+        <div class="field">
+          <label for="password">RWTH 密码</label>
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="qr_upload">
+          <label for="token_qr">Token 二维码图片</label>
+          <p>选择你保存在本机的 Token 二维码截图。图片只会在本机读取，随后不会被保留。</p>
+          <input id="token_qr" name="token_qr" type="file" accept="image/*" required>
+        </div>
+        <label class="consent" for="privacy_acknowledgement">
+          <input id="privacy_acknowledgement" name="privacy_acknowledgement" type="checkbox" required>
+          <span>我了解此扩展是独立项目，不隶属 RWTH；我的凭据会保存在本机系统保险库中。请阅读<a id="privacy_link" href="https://github.com/leonhartkun/rwthonline-auto-login/blob/main/PRIVACY.md" target="_blank" rel="noreferrer">隐私政策</a>和<a id="user_notice_link" href="https://github.com/leonhartkun/rwthonline-auto-login/blob/main/USER_NOTICE.md" target="_blank" rel="noreferrer">用户声明</a>。</span>
+        </label>
+        <div id="status" role="status" aria-live="polite"></div>
+        <div class="actions">
+          <button type="submit">保存并启用自动登录</button>
+        </div>
+      </form>
+    </section>
   </main>
   <script type="module" src="onboarding.js"></script>
 </body>

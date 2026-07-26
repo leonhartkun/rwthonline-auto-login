@@ -96,9 +96,5 @@ form.addEventListener("submit", async (event) => {
   }
 });
 
-document.getElementById("clear").addEventListener("click", () => {
-  set_status("删除系统保险库数据将在下一版本的本机助手中提供。", "error");
-});
-
 setup_install_command();
 load_existing_configuration().catch((error) => set_status(error.message, "error"));

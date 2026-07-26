@@ -18,6 +18,8 @@ Your QR image, credentials, TOTP secret, generated codes, and activity log are n
 
 This is an independent project and is not affiliated with or endorsed by RWTH Aachen University.
 
+Before saving credentials, the setup page shows the local-storage notice and requires the user to acknowledge the Privacy Policy and User Notice.
+
 ## Privacy disclosure answers
 
 - User data handled: authentication information (username, password, TOTP secret) and website activity limited to RWTH host names used by the extension.
@@ -25,6 +27,7 @@ This is an independent project and is not affiliated with or endorsed by RWTH Aa
 - Data transferred to third parties: no.
 - Data used outside the extension's core function: no.
 - Privacy policy: https://github.com/leonhartkun/rwthonline-auto-login/blob/main/PRIVACY.md
+- User notice: https://github.com/leonhartkun/rwthonline-auto-login/blob/main/USER_NOTICE.md
 
 ## Submission checklist
 
