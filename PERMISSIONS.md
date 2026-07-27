@@ -8,6 +8,8 @@ RWTHonline Auto Login 的唯一用途是：使用用户一次性配置并保存�
 
 扩展使用 Native Messaging 与用户自行安装的本机助手通信。本机助手只负责把 RWTH 用户名、密码和 TOTP 密钥保存在 macOS Keychain 或 Windows Credential Manager 中，并在登录时返回所需凭据或当前 TOTP 代码。扩展不通过此权限读取其他本机文件、执行任意命令或上传数据。
 
+在 Chrome 保持连接期间，助手只会在第一次读取后将配置暂存在进程内存中，避免同一次浏览器会话反复访问系统保险库；连接关闭或助手退出后，该临时缓存即消失。
+
 ## Storage
 
 扩展使用 `storage` 保存最多 50 条本地活动记录，内容为时间、自动化动作和 RWTH 主机名，以便用户在扩展弹窗中检查运行状态。账号、密码和 TOTP 密钥不保存在 Chrome Storage 中；它们由本机助手保存在系统保险库。

@@ -25,6 +25,8 @@ Users can replace the saved credentials and TOTP secret by running the extension
 
 The credentials and TOTP secret are retained locally until the user replaces or removes them through the operating system's credential manager. The extension does not maintain a remote account, server-side database, analytics service, or backup of this data.
 
+While Chrome keeps an active Native Messaging connection to the local helper, the helper may retain the already-read configuration in its process memory to avoid repeated credential-vault access during the same browser session. This volatile cache is cleared when that connection closes or the helper process exits; it is not an additional persistent store.
+
 ## Security and use limitation
 
 Authentication information is used solely to provide the user-facing RWTH sign-in automation described by this extension. It is not sold, shared, used for advertising, or made available for human review by the developer. The extension communicates with the local helper only through Chrome's native-messaging channel and communicates with RWTH pages only over HTTPS.

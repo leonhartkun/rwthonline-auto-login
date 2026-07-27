@@ -16,6 +16,7 @@ import sys
 import time
 
 SERVICE_PREFIX = "rwthonline-auto-login"
+SESSION_CACHE = {}
 
 
 def service_name(name):
@@ -106,6 +107,16 @@ def vault_read(name):
     raise RuntimeError("This helper currently supports macOS and Windows only.")
 
 
+def clear_session_cache():
+    SESSION_CACHE.clear()
+
+
+def cached_vault_read(name):
+    if name not in SESSION_CACHE:
+        SESSION_CACHE[name] = vault_read(name)
+    return SESSION_CACHE[name]
+
+
 def current_totp_code(secret, digits=6, period=30, algorithm="SHA-1"):
     normalized = secret.upper().replace(" ", "").replace("=", "")
     key = base64.b32decode(normalized + "=" * (-len(normalized) % 8))
@@ -124,6 +135,7 @@ def configure(message):
         if value is None or value == "":
             raise ValueError(f"Missing {field}.")
         vault_write(field, str(value))
+        SESSION_CACHE[field] = str(value)
     return {"ok": True}
 
 
@@ -132,10 +144,10 @@ def handle(message):
     if action == "configure_credentials":
         return configure(message)
     if action == "get_credentials":
-        return {"username": vault_read("username"), "password": vault_read("password")}
+        return {"username": cached_vault_read("username"), "password": cached_vault_read("password")}
     if action == "get_totp":
-        return {"code": current_totp_code(vault_read("totp_secret"), vault_read("totp_digits"),
-                                             vault_read("totp_period"), vault_read("totp_algorithm"))}
+        return {"code": current_totp_code(cached_vault_read("totp_secret"), cached_vault_read("totp_digits"),
+                                             cached_vault_read("totp_period"), cached_vault_read("totp_algorithm"))}
     if action == "get_helper_status":
         return {"ok": True, "platform": sys.platform}
     raise ValueError("Unsupported action.")
@@ -156,12 +168,17 @@ def send_message(payload):
 
 
 def main():
-    try:
+    while True:
         message = read_message()
-        if message is not None:
-            send_message(handle(message))
-    except Exception as error:
-        send_message({"error": str(error)})
+        if message is None:
+            return
+        try:
+            response = handle(message)
+        except Exception as error:
+            response = {"error": str(error)}
+        if "request_id" in message:
+            response["request_id"] = message["request_id"]
+        send_message(response)
 
 
 if __name__ == "__main__":

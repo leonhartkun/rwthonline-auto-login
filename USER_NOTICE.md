@@ -8,6 +8,8 @@ RWTHonline Auto Login is an independent, open-source browser extension created t
 
 After one-time configuration, the extension can detect supported RWTH sign-in pages, retrieve the credentials held in the local operating-system credential vault, and fill the username, password, and current time-based one-time code needed for the sign-in flow.
 
+To avoid repeated operating-system vault reads during the same browser session, the local helper may keep the already-read configuration in its process memory while Chrome remains connected. This temporary memory cache disappears when the connection closes or the helper exits.
+
 The extension works only on RWTH Aachen domains needed for this purpose. It does not inspect, inject into, or operate on unrelated websites.
 
 ## Your responsibility
