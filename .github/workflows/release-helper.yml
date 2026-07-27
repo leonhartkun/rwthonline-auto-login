@@ -42,7 +42,10 @@ jobs:
           if [ "$RUNNER_OS" = "Windows" ]; then
             mv dist/rwthonline_native_host/rwthonline_native_host.exe dist/${{ matrix.asset }}
           else
-            codesign --force --deep --sign - dist/rwthonline_native_host
+            # The PyInstaller onedir folder is not an application bundle. Signing the
+            # folder itself creates a resource seal that becomes invalid after unzip.
+            # Sign the executable Chrome launches, then archive the directory intact.
+            codesign --force --sign - dist/rwthonline_native_host/rwthonline_native_host
             ditto -c -k --sequesterRsrc --keepParent dist/rwthonline_native_host dist/${{ matrix.asset }}
           fi
         shell: bash
