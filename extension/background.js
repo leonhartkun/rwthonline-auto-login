@@ -66,6 +66,13 @@ async function warm_native_helper() {
   await native_message({ action: "get_login_data" });
 }
 
+async function get_login_data(message) {
+  const response = await native_message(message);
+  if (!response || response.error) return response;
+  const { token_label } = await chrome.storage.local.get("token_label");
+  return { ...response, token_label: response.token_label || token_label };
+}
+
 chrome.runtime.onStartup.addListener(() => {
   warm_native_helper().catch(() => {});
 });
@@ -79,7 +86,7 @@ chrome.runtime.onMessage.addListener((message, sender, send_response) => {
     }
 
     if (message.action === "get_login_data" || message.action === "get_credentials") {
-      send_response(await native_message(message));
+      send_response(await get_login_data(message));
       return;
     }
 
@@ -102,7 +109,16 @@ chrome.runtime.onMessage.addListener((message, sender, send_response) => {
       return;
     }
 
-    if (message.action === "configure_credentials" || message.action === "get_helper_status") {
+    if (message.action === "configure_credentials") {
+      const response = await native_message(message);
+      if (response?.ok) {
+        await chrome.storage.local.set({ token_label: message.token_label });
+      }
+      send_response(response);
+      return;
+    }
+
+    if (message.action === "get_helper_status") {
       send_response(await native_message(message));
       return;
     }

@@ -26,6 +26,16 @@ test("token selection uses the configured Token label before the Selfload fallba
   assert.match(contentScript, /configured_token_label/);
 });
 
+test("keeps the Token label in extension storage so an existing helper can use it", async () => {
+  const [background, onboarding] = await Promise.all([
+    readFile(new URL("../background.js", import.meta.url), "utf8"),
+    readFile(new URL("../onboarding.js", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(background, /get\("token_label"\)/);
+  assert.match(onboarding, /set\(\{ token_label:/);
+});
+
 test("records non-secret durations for each native helper request", async () => {
   const background = await readFile(new URL("../background.js", import.meta.url), "utf8");
   const contentScript = await readFile(new URL("../content_script.js", import.meta.url), "utf8");

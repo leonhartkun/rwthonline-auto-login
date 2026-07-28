@@ -95,6 +95,7 @@ form.addEventListener("submit", async (event) => {
     if (!response?.ok) {
       throw new Error(response?.error || "无法保存到系统保险库。");
     }
+    await chrome.storage.local.set({ token_label: token_label_input.value.trim() });
     password_input.value = "";
     token_qr_input.value = "";
     set_status("已保存。正在关闭设置页…", "success");
