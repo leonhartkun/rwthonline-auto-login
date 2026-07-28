@@ -18,3 +18,13 @@ test("login page receives all vault data through one native request", async () =
   assert.match(contentScript, /action: "get_login_data"/);
   assert.doesNotMatch(contentScript, /action: "get_credentials"/);
 });
+
+test("records non-secret durations for each native helper request", async () => {
+  const background = await readFile(new URL("../background.js", import.meta.url), "utf8");
+  const contentScript = await readFile(new URL("../content_script.js", import.meta.url), "utf8");
+
+  assert.match(background, /native_timing/);
+  assert.match(background, /elapsed_ms/);
+  assert.match(contentScript, /login_data_ms/);
+  assert.match(contentScript, /totp_ms/);
+});

@@ -1,6 +1,7 @@
 import { rwth_host_from_url } from "./log_host.mjs";
 
 const MAX_LOG_ENTRIES = 50;
+const MAX_NATIVE_TIMINGS = 20;
 const NATIVE_HOST = "com.rwthonline.auto_login";
 let native_port;
 let next_native_request_id = 0;
@@ -12,14 +13,28 @@ async function appendLog(text, url) {
   await chrome.storage.local.set({ log: log.slice(0, MAX_LOG_ENTRIES) });
 }
 
+async function appendNativeTiming(action, elapsed_ms, reused_port) {
+  const { native_timing = [] } = await chrome.storage.local.get("native_timing");
+  native_timing.unshift({ time: Date.now(), action, elapsed_ms, reused_port });
+  await chrome.storage.local.set({ native_timing: native_timing.slice(0, MAX_NATIVE_TIMINGS) });
+}
+
 function native_message(message) {
   return new Promise((resolve) => {
+    const started_at = performance.now();
     const request_id = String(++next_native_request_id);
     try {
+      const reused_port = Boolean(native_port);
       const port = get_native_port();
-      pending_native_requests.set(request_id, resolve);
+      pending_native_requests.set(request_id, (response) => {
+        appendNativeTiming(message.action, Math.round(performance.now() - started_at), reused_port)
+          .catch(() => {});
+        resolve(response);
+      });
       port.postMessage({ ...message, request_id });
     } catch (error) {
+      appendNativeTiming(message.action, Math.round(performance.now() - started_at), false)
+        .catch(() => {});
       resolve({ error: `无法连接本机助手：${error.message}` });
     }
   });

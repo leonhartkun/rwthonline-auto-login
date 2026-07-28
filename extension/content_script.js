@@ -3,6 +3,10 @@
     chrome.runtime.sendMessage({ action: "log", text });
   }
 
+  function elapsed_ms(started_at) {
+    return Math.round(performance.now() - started_at);
+  }
+
   function fillAndDispatch(el, value) {
     const proto = Object.getPrototypeOf(el);
     const setter = Object.getOwnPropertyDescriptor(proto, "value").set;
@@ -44,6 +48,7 @@
     );
     if (!username || !password || username.value) return false;
 
+    const started_at = performance.now();
     chrome.runtime.sendMessage({ action: "get_login_data" }, (resp) => {
       if (!resp || resp.error) {
         log(`获取账号密码失败: ${resp && resp.error}`);
@@ -51,7 +56,8 @@
       }
       fillAndDispatch(username, resp.username);
       fillAndDispatch(password, resp.password);
-      log("自动填写账号密码");
+      const login_data_ms = elapsed_ms(started_at);
+      log(`自动填写账号密码（本机助手 ${login_data_ms} ms）`);
       const btn = findSubmitButton();
       if (btn) btn.click();
     });
@@ -80,13 +86,15 @@
     );
     if (!otpField || otpField.value) return false;
 
+    const started_at = performance.now();
     chrome.runtime.sendMessage({ action: "get_totp" }, (resp) => {
       if (!resp || resp.error) {
         log(`获取验证码失败: ${resp && resp.error}`);
         return;
       }
       fillAndDispatch(otpField, resp.code);
-      log("自动填写 TOTP 验证码");
+      const totp_ms = elapsed_ms(started_at);
+      log(`自动填写 TOTP 验证码（本机助手 ${totp_ms} ms）`);
       const btn = findSubmitButton();
       if (btn) btn.click();
     });
