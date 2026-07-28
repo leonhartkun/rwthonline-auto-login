@@ -16,6 +16,7 @@ import sys
 import time
 
 SERVICE_PREFIX = "rwthonline-auto-login"
+LOGIN_DATA_NAME = "login-data-v1"
 SESSION_CACHE = {}
 
 
@@ -130,24 +131,44 @@ def current_totp_code(secret, digits=6, period=30, algorithm="SHA-1"):
 
 def configure(message):
     fields = ("username", "password", "totp_secret", "totp_algorithm", "totp_digits", "totp_period")
+    saved = {}
     for field in fields:
         value = message.get(field)
         if value is None or value == "":
             raise ValueError(f"Missing {field}.")
         vault_write(field, str(value))
         SESSION_CACHE[field] = str(value)
+        saved[field] = str(value)
+    vault_write(LOGIN_DATA_NAME, json.dumps(saved))
+    SESSION_CACHE[LOGIN_DATA_NAME] = saved
     return {"ok": True}
+
+
+def login_data():
+    if LOGIN_DATA_NAME not in SESSION_CACHE:
+        try:
+            SESSION_CACHE[LOGIN_DATA_NAME] = json.loads(vault_read(LOGIN_DATA_NAME))
+        except Exception:
+            fields = ("username", "password", "totp_secret", "totp_algorithm", "totp_digits", "totp_period")
+            migrated = {field: cached_vault_read(field) for field in fields}
+            vault_write(LOGIN_DATA_NAME, json.dumps(migrated))
+            SESSION_CACHE[LOGIN_DATA_NAME] = migrated
+    return SESSION_CACHE[LOGIN_DATA_NAME]
 
 
 def handle(message):
     action = message.get("action")
     if action == "configure_credentials":
         return configure(message)
+    if action == "get_login_data":
+        return login_data()
     if action == "get_credentials":
-        return {"username": cached_vault_read("username"), "password": cached_vault_read("password")}
+        data = login_data()
+        return {"username": data["username"], "password": data["password"]}
     if action == "get_totp":
-        return {"code": current_totp_code(cached_vault_read("totp_secret"), cached_vault_read("totp_digits"),
-                                             cached_vault_read("totp_period"), cached_vault_read("totp_algorithm"))}
+        data = login_data()
+        return {"code": current_totp_code(data["totp_secret"], data["totp_digits"],
+                                             data["totp_period"], data["totp_algorithm"])}
     if action == "get_helper_status":
         return {"ok": True, "platform": sys.platform}
     raise ValueError("Unsupported action.")

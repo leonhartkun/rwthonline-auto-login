@@ -44,7 +44,7 @@
     );
     if (!username || !password || username.value) return false;
 
-    chrome.runtime.sendMessage({ action: "get_credentials" }, (resp) => {
+    chrome.runtime.sendMessage({ action: "get_login_data" }, (resp) => {
       if (!resp || resp.error) {
         log(`获取账号密码失败: ${resp && resp.error}`);
         return;
@@ -101,6 +101,7 @@
       return;
     }
     // 任意 *.rwth-aachen.de 页面：只要出现 SSO/登录入口就自动点进去
+    chrome.runtime.sendMessage({ action: "warm_native_helper" });
     clickSSOLink();
   }
 

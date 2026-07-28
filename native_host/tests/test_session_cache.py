@@ -1,6 +1,7 @@
 import pathlib
 import sys
 import unittest
+import json
 from unittest.mock import patch
 
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
@@ -12,7 +13,9 @@ class SessionCacheTest(unittest.TestCase):
         host.clear_session_cache()
 
     def test_credentials_are_read_once_per_helper_session(self):
-        with patch.object(host, "vault_read", side_effect=["alice", "secret"]) as read:
+        saved = {"username": "alice", "password": "secret", "totp_secret": "seed",
+                 "totp_algorithm": "SHA-1", "totp_digits": "6", "totp_period": "30"}
+        with patch.object(host, "vault_read", return_value=json.dumps(saved)) as read:
             self.assertEqual(
                 host.handle({"action": "get_credentials"}),
                 {"username": "alice", "password": "secret"},
@@ -22,7 +25,7 @@ class SessionCacheTest(unittest.TestCase):
                 {"username": "alice", "password": "secret"},
             )
 
-        self.assertEqual(read.call_count, 2)
+        self.assertEqual(read.call_count, 1)
 
     def test_main_accepts_more_than_one_native_message(self):
         responses = []
@@ -34,6 +37,20 @@ class SessionCacheTest(unittest.TestCase):
             host.main()
 
         self.assertEqual([response["request_id"] for response in responses], ["one", "two"])
+
+    def test_login_data_uses_one_combined_vault_record(self):
+        saved = {
+            "username": "alice",
+            "password": "secret",
+            "totp_secret": "JBSWY3DPEHPK3PXP",
+            "totp_algorithm": "SHA-1",
+            "totp_digits": "6",
+            "totp_period": "30",
+        }
+        with patch.object(host, "vault_read", return_value=json.dumps(saved)) as read:
+            self.assertEqual(host.handle({"action": "get_login_data"}), saved)
+
+        self.assertEqual(read.call_count, 1)
 
 
 if __name__ == "__main__":

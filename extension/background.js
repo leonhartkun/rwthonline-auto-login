@@ -47,6 +47,14 @@ function get_native_port() {
   return native_port;
 }
 
+async function warm_native_helper() {
+  await native_message({ action: "get_login_data" });
+}
+
+chrome.runtime.onStartup.addListener(() => {
+  warm_native_helper().catch(() => {});
+});
+
 chrome.runtime.onMessage.addListener((message, sender, send_response) => {
   (async () => {
     if (message.action === "log") {
@@ -55,7 +63,7 @@ chrome.runtime.onMessage.addListener((message, sender, send_response) => {
       return;
     }
 
-    if (message.action === "get_credentials") {
+    if (message.action === "get_login_data" || message.action === "get_credentials") {
       send_response(await native_message(message));
       return;
     }
@@ -81,6 +89,12 @@ chrome.runtime.onMessage.addListener((message, sender, send_response) => {
 
     if (message.action === "configure_credentials" || message.action === "get_helper_status") {
       send_response(await native_message(message));
+      return;
+    }
+
+    if (message.action === "warm_native_helper") {
+      await warm_native_helper();
+      send_response({ ok: true });
       return;
     }
 
