@@ -11,3 +11,11 @@ test("onboarding presents a compact setup tool layout", async () => {
   assert.match(html, /for="token_qr"/);
   assert.doesNotMatch(html, /id="clear"/);
 });
+
+test("onboarding automatically detects a newly installed native helper", async () => {
+  const source = await readFile(new URL("../onboarding.js", import.meta.url), "utf8");
+
+  assert.match(source, /setInterval\(check_helper_status,/);
+  assert.match(source, /helper_setup\.hidden = true/);
+  assert.match(source, /已检测到本机助手/);
+});

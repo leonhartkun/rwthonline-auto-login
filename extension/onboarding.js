@@ -5,6 +5,7 @@ const username_input = document.getElementById("username");
 const password_input = document.getElementById("password");
 const token_qr_input = document.getElementById("token_qr");
 const status_element = document.getElementById("status");
+const helper_setup = document.getElementById("helper_setup");
 const release_base_url = "https://github.com/leonhartkun/rwthonline-auto-login/releases/latest/download";
 const repository_url = "https://github.com/leonhartkun/rwthonline-auto-login";
 let helper_installed = false;
@@ -24,7 +25,7 @@ function setup_install_command() {
   document.getElementById("source_link").href = repository_url;
   document.getElementById("copy_install_command").addEventListener("click", async () => {
     await navigator.clipboard.writeText(command);
-    set_status("安装命令已复制。执行后返回此页继续设置。", "success");
+    set_status("安装命令已复制。安装完成后，本页会自动继续。", "success");
   });
 }
 
@@ -54,12 +55,17 @@ function send_background(message) {
   return new Promise((resolve) => chrome.runtime.sendMessage(message, resolve));
 }
 
-async function load_existing_configuration() {
+async function check_helper_status() {
   const status = await send_background({ action: "get_helper_status" });
-  helper_installed = Boolean(status?.ok);
-  if (helper_installed) {
-    set_status("本机助手已就绪。填写账号、密码并选择 Token 二维码后即可保存。", "success");
+  if (!status?.ok) {
+    return;
   }
+  if (!helper_installed) {
+    helper_installed = true;
+    helper_setup.hidden = true;
+    set_status("已检测到本机助手。填写账号、密码并选择 Token 二维码后即可保存。", "success");
+  }
+  window.clearInterval(helper_status_timer);
 }
 
 form.addEventListener("submit", async (event) => {
@@ -97,4 +103,5 @@ form.addEventListener("submit", async (event) => {
 });
 
 setup_install_command();
-load_existing_configuration().catch((error) => set_status(error.message, "error"));
+check_helper_status().catch(() => {});
+const helper_status_timer = window.setInterval(check_helper_status, 1500);
