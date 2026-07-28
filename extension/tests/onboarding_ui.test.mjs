@@ -12,6 +12,14 @@ test("onboarding presents a compact setup tool layout", async () => {
   assert.doesNotMatch(html, /id="clear"/);
 });
 
+test("onboarding gives one plain-language IDM setup guide instead of a numbered wizard", async () => {
+  const html = await readFile(new URL("../onboarding.html", import.meta.url), "utf8");
+
+  assert.match(html, /class="setup_guide"/);
+  assert.match(html, /idm\.rwth-aachen\.de\/selfservice\/MFATokenManager\?2/);
+  assert.doesNotMatch(html, /<ol class="steps">/);
+});
+
 test("onboarding automatically detects a newly installed native helper", async () => {
   const source = await readFile(new URL("../onboarding.js", import.meta.url), "utf8");
 

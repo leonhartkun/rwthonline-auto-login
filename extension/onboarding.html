@@ -14,16 +14,14 @@
     .brand { margin: 0 0 34px; color: #00549f; font-size: 14px; font-weight: 750; letter-spacing: .02em; }
     .progress_panel h1 { margin: 0 0 8px; font-size: 21px; letter-spacing: -.02em; }
     .progress_panel > p { margin: 0 0 26px; color: #65717c; font-size: 13px; line-height: 1.55; }
-    .steps { display: grid; gap: 18px; padding: 0; margin: 0; list-style: none; counter-reset: setup; }
-    .steps li { position: relative; padding-left: 34px; color: #54616d; font-size: 13px; line-height: 1.45; counter-increment: setup; }
-    .steps li::before { position: absolute; left: 0; top: -2px; width: 22px; height: 22px; border: 1px solid #b6c0ca; border-radius: 50%; color: #4b5b68; content: counter(setup); display: grid; place-items: center; font-size: 12px; font-weight: 700; }
-    .steps strong { display: block; color: #27333e; font-size: 13px; }
     .local_note { margin-top: 34px; padding-top: 18px; border-top: 1px solid #dde3e8; color: #65717c; font-size: 12px; line-height: 1.55; }
     .local_note strong { color: #3e4d5a; }
     .setup_content { padding: 32px 36px 36px; }
     .section_heading { display: flex; align-items: baseline; justify-content: space-between; gap: 16px; margin-bottom: 26px; }
     .section_heading h2 { margin: 0; font-size: 20px; letter-spacing: -.02em; }
     .section_heading p { margin: 0; color: #6c7781; font-size: 13px; }
+    .setup_guide { margin: 0 0 24px; padding: 14px 16px; border-left: 3px solid #00549f; background: #f1f6fb; color: #475663; font-size: 13px; line-height: 1.65; }
+    .setup_guide p { margin: 0; }
     #helper_setup { margin: 0 0 30px; padding: 16px 18px; border-left: 3px solid #f6c945; background: #faf8f0; }
     .helper_title { display: flex; align-items: center; justify-content: space-between; gap: 12px; color: #26333f; font-size: 14px; font-weight: 700; }
     .helper_title span { color: #68747e; font-size: 12px; font-weight: 500; }
@@ -58,14 +56,10 @@
     @media (max-width: 760px) {
       .setup_shell { width: min(100% - 24px, 560px); grid-template-columns: 1fr; margin: 12px auto 28px; }
       .progress_panel { border-right: 0; border-bottom: 1px solid #d7dde3; padding: 24px; }
-      .steps { grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 12px; }
-      .steps li { padding-left: 0; padding-top: 28px; }
-      .steps li::before { top: 0; }
       .local_note { display: none; }
       .setup_content { padding: 26px 24px 30px; }
     }
     @media (max-width: 480px) {
-      .steps { grid-template-columns: 1fr; }
       .section_heading, .helper_title { align-items: flex-start; flex-direction: column; gap: 5px; }
       .helper_actions { align-items: flex-start; flex-direction: column; }
     }
@@ -76,13 +70,8 @@
   <main class="setup_shell">
     <aside class="progress_panel" aria-label="设置步骤">
       <p class="brand">RWTHONLINE AUTO LOGIN</p>
-      <h1>首次设置</h1>
+      <h1>本地自动登录</h1>
       <p>完成一次配置，之后在 RWTH 登录页自动填写。</p>
-      <ol class="steps">
-        <li><strong>安装助手</strong>连接系统钥匙串或凭据管理器。</li>
-        <li><strong>添加账号</strong>输入你自己的 RWTH 凭据。</li>
-        <li><strong>导入 Token</strong>选择设备上的二维码图片。</li>
-      </ol>
       <p class="local_note"><strong>本地处理。</strong><br>二维码只在此设备解析；账号与 Token 不会发送到开发者或其他服务。</p>
     </aside>
 
@@ -91,6 +80,10 @@
         <h2 id="setup_title">账号与 Token</h2>
         <p>约需 2 分钟</p>
       </div>
+
+      <section class="setup_guide" aria-label="Token 设置说明">
+        <p>请先在 <a href="https://idm.rwth-aachen.de/selfservice/MFATokenManager?2" target="_blank" rel="noreferrer">RWTH IDM Self Service</a> 创建你的 Token，并记下登录页下拉框中显示的完整名称、保存二维码图片。将二维码上传到这里后会显示当前验证码；把它填回 IDM 页面完成验证。随后填写 RWTH 用户名和密码并保存——这些信息只保存在本机系统保险库，不会上传。保存后刷新 RWTH 登录页即可使用自动登录。</p>
+      </section>
 
       <section id="helper_setup" aria-label="本机助手安装">
         <div class="helper_title">先安装本机助手 <span>只需一次</span></div>
