@@ -24,6 +24,8 @@ test("token selection uses the configured Token label before the Selfload fallba
 
   assert.match(contentScript, /resp\.token_label/);
   assert.match(contentScript, /configured_token_label/);
+  assert.match(contentScript, /is_totp_token/);
+  assert.match(contentScript, /includes\(configured_token_label\)/);
 });
 
 test("keeps the Token label in extension storage so an existing helper can use it", async () => {

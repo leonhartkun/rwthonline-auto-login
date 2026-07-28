@@ -73,9 +73,11 @@
         return;
       }
       const configured_token_label = (resp.token_label || "Selfload").trim().toLowerCase();
-      const target = Array.from(select.options).find(
-        (option) => option.textContent.trim().toLowerCase() === configured_token_label
-      );
+      const is_totp_token = (label) => label.includes(" - totp - ");
+      const target = Array.from(select.options).find((option) => {
+        const option_label = option.textContent.trim().toLowerCase();
+        return is_totp_token(option_label) && option_label.includes(configured_token_label);
+      });
       if (!target) {
         log(`未找到已配置的 Token: ${resp.token_label || "Selfload"}`);
         return;
