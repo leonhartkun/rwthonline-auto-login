@@ -20,12 +20,21 @@ test("login page receives all vault data through one native request", async () =
 });
 
 test("token selection uses the configured Token label before the Selfload fallback", async () => {
-  const contentScript = await readFile(new URL("../content_script.js", import.meta.url), "utf8");
+  const [background, contentScript] = await Promise.all([
+    readFile(new URL("../background.js", import.meta.url), "utf8"),
+    readFile(new URL("../content_script.js", import.meta.url), "utf8"),
+  ]);
 
-  assert.match(contentScript, /resp\.token_label/);
-  assert.match(contentScript, /configured_token_label/);
-  assert.match(contentScript, /is_totp_token/);
-  assert.match(contentScript, /includes\(configured_token_label\)/);
+  assert.match(background, /action === "get_token_label"/);
+  assert.match(background, /chrome\.storage\.local\.get\("token_label"\)/);
+  const tokenSelection = contentScript.match(
+    /function handleTokenSelectPage\(\) \{([\s\S]*?)\n  \}\n\n  function handleOtpPage/
+  )?.[1] || "";
+  assert.match(tokenSelection, /action: "get_token_label"/);
+  assert.doesNotMatch(tokenSelection, /get_login_data/);
+  assert.match(tokenSelection, /configured_token_label/);
+  assert.match(tokenSelection, /is_totp_token/);
+  assert.match(tokenSelection, /includes\(configured_token_label\)/);
 });
 
 test("keeps the Token label in extension storage so an existing helper can use it", async () => {

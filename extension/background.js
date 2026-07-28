@@ -90,6 +90,12 @@ chrome.runtime.onMessage.addListener((message, sender, send_response) => {
       return;
     }
 
+    if (message.action === "get_token_label") {
+      const { token_label } = await chrome.storage.local.get("token_label");
+      send_response({ token_label: token_label || "Selfload" });
+      return;
+    }
+
     if (message.action === "get_totp") {
       send_response(await native_message(message));
       return;

@@ -67,9 +67,9 @@
   function handleTokenSelectPage() {
     const select = document.querySelector("select");
     if (!select) return false;
-    chrome.runtime.sendMessage({ action: "get_login_data" }, (resp) => {
+    chrome.runtime.sendMessage({ action: "get_token_label" }, (resp) => {
       if (!resp || resp.error) {
-        log(`获取 Token 设置失败: ${resp && resp.error}`);
+        log(`获取 Token 名称失败: ${resp && resp.error}`);
         return;
       }
       const configured_token_label = (resp.token_label || "Selfload").trim().toLowerCase();
