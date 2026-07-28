@@ -34,6 +34,7 @@
     form { display: grid; gap: 18px; }
     .field { display: grid; gap: 7px; }
     label { color: #293641; font-size: 13px; font-weight: 700; }
+    small { color: #66737e; font-size: 12px; line-height: 1.45; }
     input { width: 100%; min-height: 42px; border: 1px solid #bcc7d1; border-radius: 4px; background: #fff; color: #1c2733; font: inherit; padding: 9px 10px; }
     input:focus { border-color: #00549f; outline: 2px solid #00549f24; outline-offset: 1px; }
     .qr_upload { display: grid; gap: 8px; padding: 16px; border: 1px dashed #8fa2b3; background: #fafcfd; }
@@ -105,6 +106,11 @@
         <div class="field">
           <label for="password">RWTH 密码</label>
           <input id="password" name="password" type="password" autocomplete="current-password" required>
+        </div>
+        <div class="field">
+          <label for="token_label">RWTH Token 名称</label>
+          <input id="token_label" name="token_label" value="Selfload" required>
+          <small>填写 RWTH 登录页下拉框中显示的完整名称；之后可在“重新配置”中修改。</small>
         </div>
         <div class="qr_upload">
           <label for="token_qr">Token 二维码图片</label>

@@ -67,16 +67,26 @@
   function handleTokenSelectPage() {
     const select = document.querySelector("select");
     if (!select) return false;
-    const target = Array.from(select.options).find((o) =>
-      o.textContent.toLowerCase().includes("selfload")
-    );
-    if (!target) return false;
+    chrome.runtime.sendMessage({ action: "get_login_data" }, (resp) => {
+      if (!resp || resp.error) {
+        log(`获取 Token 设置失败: ${resp && resp.error}`);
+        return;
+      }
+      const configured_token_label = (resp.token_label || "Selfload").trim().toLowerCase();
+      const target = Array.from(select.options).find(
+        (option) => option.textContent.trim().toLowerCase() === configured_token_label
+      );
+      if (!target) {
+        log(`未找到已配置的 Token: ${resp.token_label || "Selfload"}`);
+        return;
+      }
 
-    select.value = target.value;
-    select.dispatchEvent(new Event("change", { bubbles: true }));
-    log(`自动选择令牌: ${target.textContent.trim()}`);
-    const btn = findSubmitButton();
-    if (btn) btn.click();
+      select.value = target.value;
+      select.dispatchEvent(new Event("change", { bubbles: true }));
+      log(`自动选择令牌: ${target.textContent.trim()}`);
+      const btn = findSubmitButton();
+      if (btn) btn.click();
+    });
     return true;
   }
 

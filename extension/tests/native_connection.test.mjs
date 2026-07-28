@@ -19,6 +19,13 @@ test("login page receives all vault data through one native request", async () =
   assert.doesNotMatch(contentScript, /action: "get_credentials"/);
 });
 
+test("token selection uses the configured Token label before the Selfload fallback", async () => {
+  const contentScript = await readFile(new URL("../content_script.js", import.meta.url), "utf8");
+
+  assert.match(contentScript, /resp\.token_label/);
+  assert.match(contentScript, /configured_token_label/);
+});
+
 test("records non-secret durations for each native helper request", async () => {
   const background = await readFile(new URL("../background.js", import.meta.url), "utf8");
   const contentScript = await readFile(new URL("../content_script.js", import.meta.url), "utf8");

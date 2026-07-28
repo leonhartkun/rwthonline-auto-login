@@ -3,6 +3,7 @@ import { parse_otpauth_uri } from "./totp.mjs";
 const form = document.getElementById("onboarding_form");
 const username_input = document.getElementById("username");
 const password_input = document.getElementById("password");
+const token_label_input = document.getElementById("token_label");
 const token_qr_input = document.getElementById("token_qr");
 const status_element = document.getElementById("status");
 const helper_setup = document.getElementById("helper_setup");
@@ -89,6 +90,7 @@ form.addEventListener("submit", async (event) => {
       totp_algorithm: totp_configuration.algorithm,
       totp_digits: totp_configuration.digits,
       totp_period: totp_configuration.period,
+      token_label: token_label_input.value.trim(),
     });
     if (!response?.ok) {
       throw new Error(response?.error || "无法保存到系统保险库。");

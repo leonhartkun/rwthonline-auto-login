@@ -19,3 +19,13 @@ test("onboarding automatically detects a newly installed native helper", async (
   assert.match(source, /helper_setup\.hidden = true/);
   assert.match(source, /已检测到本机助手/);
 });
+
+test("onboarding stores a user-configured Token label for exact selection", async () => {
+  const [html, source] = await Promise.all([
+    readFile(new URL("../onboarding.html", import.meta.url), "utf8"),
+    readFile(new URL("../onboarding.js", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(html, /id="token_label"/);
+  assert.match(source, /token_label:/);
+});

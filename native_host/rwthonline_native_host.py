@@ -130,10 +130,10 @@ def current_totp_code(secret, digits=6, period=30, algorithm="SHA-1"):
 
 
 def configure(message):
-    fields = ("username", "password", "totp_secret", "totp_algorithm", "totp_digits", "totp_period")
+    fields = ("username", "password", "totp_secret", "totp_algorithm", "totp_digits", "totp_period", "token_label")
     saved = {}
     for field in fields:
-        value = message.get(field)
+        value = message.get(field, "Selfload" if field == "token_label" else None)
         if value is None or value == "":
             raise ValueError(f"Missing {field}.")
         vault_write(field, str(value))

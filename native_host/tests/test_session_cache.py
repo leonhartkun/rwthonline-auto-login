@@ -52,6 +52,22 @@ class SessionCacheTest(unittest.TestCase):
 
         self.assertEqual(read.call_count, 1)
 
+    def test_configure_keeps_the_user_selected_token_label(self):
+        message = {
+            "action": "configure_credentials",
+            "username": "alice",
+            "password": "secret",
+            "totp_secret": "JBSWY3DPEHPK3PXP",
+            "totp_algorithm": "SHA-1",
+            "totp_digits": "6",
+            "totp_period": "30",
+            "token_label": "PITN693767FF - TAN - 050825",
+        }
+        with patch.object(host, "vault_write"):
+            self.assertEqual(host.handle(message), {"ok": True})
+
+        self.assertEqual(host.handle({"action": "get_login_data"})["token_label"], message["token_label"])
+
 
 if __name__ == "__main__":
     unittest.main()
