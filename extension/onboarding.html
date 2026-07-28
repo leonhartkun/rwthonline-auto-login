@@ -41,6 +41,10 @@
     .qr_upload label { display: block; }
     .qr_upload p { margin: 0; color: #66737e; font-size: 12px; line-height: 1.5; }
     .qr_upload input { min-height: auto; padding: 7px; background: #fff; font-size: 13px; }
+    .token_preview { display: flex; align-items: center; gap: 14px; padding: 13px 16px; border-left: 3px solid #00549f; background: #f1f6fb; }
+    .token_preview strong { display: block; color: #33414e; font-size: 12px; }
+    #verification_code { color: #00549f; font: 700 24px/1 ui-monospace, SFMono-Regular, Menlo, monospace; letter-spacing: .1em; }
+    #verification_countdown { color: #66737e; font-size: 12px; }
     .consent { display: flex; align-items: flex-start; gap: 9px; color: #56636e; font-size: 12px; line-height: 1.55; }
     .consent input { flex: 0 0 auto; width: 16px; min-height: 16px; margin: 2px 0 0; padding: 0; }
     .consent a { font-size: inherit; }
@@ -117,6 +121,10 @@
           <p>选择你保存在本机的 Token 二维码截图。图片只会在本机读取，随后不会被保留。</p>
           <input id="token_qr" name="token_qr" type="file" accept="image/*" required>
         </div>
+        <section id="token_preview" class="token_preview" hidden aria-live="polite">
+          <div><strong>当前验证码</strong><span id="verification_code"></span></div>
+          <span id="verification_countdown"></span>
+        </section>
         <label class="consent" for="privacy_acknowledgement">
           <input id="privacy_acknowledgement" name="privacy_acknowledgement" type="checkbox" required>
           <span>我了解此扩展是独立项目，不隶属 RWTH；我的凭据会保存在本机系统保险库中。请阅读<a id="privacy_link" href="https://github.com/leonhartkun/rwthonline-auto-login/blob/main/PRIVACY.md" target="_blank" rel="noreferrer">隐私政策</a>和<a id="user_notice_link" href="https://github.com/leonhartkun/rwthonline-auto-login/blob/main/USER_NOTICE.md" target="_blank" rel="noreferrer">用户声明</a>。</span>

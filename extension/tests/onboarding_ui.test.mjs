@@ -29,3 +29,14 @@ test("onboarding stores a user-configured Token label for exact selection", asyn
   assert.match(html, /id="token_label"/);
   assert.match(source, /token_label:/);
 });
+
+test("onboarding previews a locally generated code after a QR image is selected", async () => {
+  const [html, source] = await Promise.all([
+    readFile(new URL("../onboarding.html", import.meta.url), "utf8"),
+    readFile(new URL("../onboarding.js", import.meta.url), "utf8"),
+  ]);
+
+  assert.match(html, /id="verification_code"/);
+  assert.match(source, /generate_totp/);
+  assert.match(source, /token_qr_input\.addEventListener\("change"/);
+});

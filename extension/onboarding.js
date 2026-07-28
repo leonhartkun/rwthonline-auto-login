@@ -1,15 +1,19 @@
-import { parse_otpauth_uri } from "./totp.mjs";
+import { generate_totp, parse_otpauth_uri } from "./totp.mjs";
 
 const form = document.getElementById("onboarding_form");
 const username_input = document.getElementById("username");
 const password_input = document.getElementById("password");
 const token_label_input = document.getElementById("token_label");
 const token_qr_input = document.getElementById("token_qr");
+const token_preview = document.getElementById("token_preview");
+const verification_code = document.getElementById("verification_code");
+const verification_countdown = document.getElementById("verification_countdown");
 const status_element = document.getElementById("status");
 const helper_setup = document.getElementById("helper_setup");
 const release_base_url = "https://github.com/leonhartkun/rwthonline-auto-login/releases/latest/download";
 const repository_url = "https://github.com/leonhartkun/rwthonline-auto-login";
 let helper_installed = false;
+let preview_totp_configuration;
 
 function set_status(message, type = "") {
   status_element.textContent = message;
@@ -51,6 +55,29 @@ async function decode_local_qr(file) {
     image.close();
   }
 }
+
+async function refresh_verification_code() {
+  if (!preview_totp_configuration) return;
+  const { secret, algorithm, digits, period } = preview_totp_configuration;
+  verification_code.textContent = await generate_totp(secret, Date.now(), { algorithm, digits, period });
+  const seconds_remaining = period - (Math.floor(Date.now() / 1_000) % period);
+  verification_countdown.textContent = `${seconds_remaining} 秒后更新`;
+}
+
+token_qr_input.addEventListener("change", async () => {
+  token_preview.hidden = true;
+  preview_totp_configuration = undefined;
+  const selected_file = token_qr_input.files[0];
+  if (!selected_file) return;
+
+  try {
+    preview_totp_configuration = parse_otpauth_uri(await decode_local_qr(selected_file));
+    await refresh_verification_code();
+    token_preview.hidden = false;
+  } catch (error) {
+    set_status(error.message, "error");
+  }
+});
 
 function send_background(message) {
   return new Promise((resolve) => chrome.runtime.sendMessage(message, resolve));
@@ -108,3 +135,4 @@ form.addEventListener("submit", async (event) => {
 setup_install_command();
 check_helper_status().catch(() => {});
 const helper_status_timer = window.setInterval(check_helper_status, 1500);
+window.setInterval(() => refresh_verification_code().catch(() => {}), 1000);
