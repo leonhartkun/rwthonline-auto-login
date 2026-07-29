@@ -66,3 +66,14 @@ test("Windows release uses a self-contained native helper executable", async () 
   assert.match(workflow, /runner\.os == 'Windows'/);
   assert.match(workflow, /pyinstaller --onefile --name rwthonline_native_host/);
 });
+
+test("Windows installer fails closed and writes Chrome's native-host default value", async () => {
+  const installer = await readFile(
+    new URL("../../installers/install_windows.ps1", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(installer, /\$ErrorActionPreference\s*=\s*'Stop'/);
+  assert.match(installer, /Test-Path \$helperPath/);
+  assert.match(installer, /reg\.exe add .*\/ve .*\/d \$manifestPath .*\/f/);
+});
