@@ -10,6 +10,8 @@ const verification_code = document.getElementById("verification_code");
 const verification_countdown = document.getElementById("verification_countdown");
 const status_element = document.getElementById("status");
 const helper_setup = document.getElementById("helper_setup");
+const helper_title = document.getElementById("helper_title");
+const copy_install_command = document.getElementById("copy_install_command");
 const release_base_url = "https://github.com/leonhartkun/rwthonline-auto-login/releases/latest/download";
 const repository_url = "https://github.com/leonhartkun/rwthonline-auto-login";
 let helper_installed = false;
@@ -28,7 +30,7 @@ function setup_install_command() {
     : `curl -fsSL ${release_base_url}/install_macos.sh | sh -s -- ${extension_id}`;
   document.getElementById("install_command").textContent = command;
   document.getElementById("source_link").href = repository_url;
-  document.getElementById("copy_install_command").addEventListener("click", async () => {
+  copy_install_command.addEventListener("click", async () => {
     await navigator.clipboard.writeText(command);
     set_status("安装命令已复制。安装完成后，本页会自动继续。", "success");
   });
@@ -90,7 +92,9 @@ async function check_helper_status() {
   }
   if (!helper_installed) {
     helper_installed = true;
-    helper_setup.hidden = true;
+    helper_setup.classList.add("installed");
+    helper_title.textContent = "本机助手已就绪";
+    copy_install_command.textContent = "复制重新安装命令";
     set_status("已检测到本机助手。填写账号、密码并选择 Token 二维码后即可保存。", "success");
   }
   window.clearInterval(helper_status_timer);

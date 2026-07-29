@@ -20,11 +20,16 @@ test("onboarding gives one plain-language IDM setup guide instead of a numbered 
   assert.doesNotMatch(html, /<ol class="steps">/);
 });
 
-test("onboarding automatically detects a newly installed native helper", async () => {
-  const source = await readFile(new URL("../onboarding.js", import.meta.url), "utf8");
+test("onboarding keeps the reinstall command available after detecting a native helper", async () => {
+  const [html, source] = await Promise.all([
+    readFile(new URL("../onboarding.html", import.meta.url), "utf8"),
+    readFile(new URL("../onboarding.js", import.meta.url), "utf8"),
+  ]);
 
   assert.match(source, /setInterval\(check_helper_status,/);
-  assert.match(source, /helper_setup\.hidden = true/);
+  assert.doesNotMatch(source, /helper_setup\.hidden = true/);
+  assert.match(source, /helper_setup\.classList\.add\("installed"\)/);
+  assert.match(html, /id="copy_install_command"/);
   assert.match(source, /已检测到本机助手/);
 });
 
