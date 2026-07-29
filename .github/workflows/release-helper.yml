@@ -37,10 +37,15 @@ jobs:
       - run: python -m unittest native_host/tests/test_session_cache.py
       - run: test "$(uname -m)" = "${{ matrix.expected_arch }}"
         if: runner.os == 'macOS'
+      # Windows releases contain one executable. Build it as a onefile binary so it
+      # does not depend on the _internal folder created by PyInstaller's onedir mode.
+      - run: pyinstaller --onefile --name rwthonline_native_host native_host/rwthonline_native_host.py
+        if: runner.os == 'Windows'
       - run: pyinstaller --onedir --name rwthonline_native_host native_host/rwthonline_native_host.py
+        if: runner.os == 'macOS'
       - run: |
           if [ "$RUNNER_OS" = "Windows" ]; then
-            mv dist/rwthonline_native_host/rwthonline_native_host.exe dist/${{ matrix.asset }}
+            mv dist/rwthonline_native_host.exe dist/${{ matrix.asset }}
           else
             # The PyInstaller onedir folder is not an application bundle. Signing the
             # folder itself creates a resource seal that becomes invalid after unzip.

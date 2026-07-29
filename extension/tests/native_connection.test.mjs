@@ -56,3 +56,13 @@ test("records non-secret durations for each native helper request", async () => 
   assert.match(contentScript, /login_data_ms/);
   assert.match(contentScript, /totp_ms/);
 });
+
+test("Windows release uses a self-contained native helper executable", async () => {
+  const workflow = await readFile(
+    new URL("../../.github/workflows/release-helper.yml", import.meta.url),
+    "utf8"
+  );
+
+  assert.match(workflow, /runner\.os == 'Windows'/);
+  assert.match(workflow, /pyinstaller --onefile --name rwthonline_native_host/);
+});
