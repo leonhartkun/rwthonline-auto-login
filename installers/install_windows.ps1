@@ -5,7 +5,11 @@ function Install-RwthonlineHelper {
   $helperPath = Join-Path $installDir 'rwthonline_native_host.exe'
   $manifestPath = Join-Path $installDir 'com.rwthonline.auto_login.json'
   New-Item -ItemType Directory -Force -Path $installDir | Out-Null
-  Invoke-WebRequest 'https://github.com/leonhartkun/rwthonline-auto-login/releases/latest/download/rwthonline_native_host_windows.exe' -OutFile $helperPath -UseBasicParsing
+  $downloader = New-Object System.Net.WebClient
+  $downloader.DownloadFile(
+    'https://github.com/leonhartkun/rwthonline-auto-login/releases/latest/download/rwthonline_native_host_windows.exe',
+    $helperPath
+  )
   if (-not (Test-Path $helperPath)) {
     throw 'RWTHonline helper download did not produce an executable.'
   }
