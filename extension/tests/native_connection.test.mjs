@@ -74,6 +74,7 @@ test("Windows installer fails closed and writes Chrome's native-host default val
   );
 
   assert.match(installer, /\$ErrorActionPreference\s*=\s*'Stop'/);
+  assert.match(installer, /Invoke-WebRequest .* -UseBasicParsing/);
   assert.match(installer, /Test-Path \$helperPath/);
   assert.match(installer, /reg\.exe add .*\/ve .*\/d \$manifestPath .*\/f/);
 });
