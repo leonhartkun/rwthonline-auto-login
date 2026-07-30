@@ -115,9 +115,9 @@ chrome.runtime.onMessage.addListener((message, sender, send_response) => {
       return;
     }
 
-    if (message.action === "configure_credentials") {
+    if (message.action === "configure_credentials" || message.action === "import_token_qr" || message.action === "get_imported_totp") {
       const response = await native_message(message);
-      if (response?.ok) {
+      if (response?.ok && message.action === "configure_credentials") {
         await chrome.storage.local.set({ token_label: message.token_label });
       }
       send_response(response);

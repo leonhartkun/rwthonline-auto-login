@@ -9,15 +9,18 @@ import base64
 import hashlib
 import hmac
 import json
+import io
 import os
 import struct
 import subprocess
 import sys
 import time
+from urllib.parse import parse_qs, unquote, urlparse
 
 SERVICE_PREFIX = "rwthonline-auto-login"
 LOGIN_DATA_NAME = "login-data-v1"
 SESSION_CACHE = {}
+PENDING_TOTP_IMPORT = None
 
 
 def service_name(name):
@@ -109,7 +112,9 @@ def vault_read(name):
 
 
 def clear_session_cache():
+    global PENDING_TOTP_IMPORT
     SESSION_CACHE.clear()
+    PENDING_TOTP_IMPORT = None
 
 
 def cached_vault_read(name):
@@ -129,7 +134,90 @@ def current_totp_code(secret, digits=6, period=30, algorithm="SHA-1"):
     return str(code).zfill(int(digits))
 
 
+def decode_otpauth_from_image(image_base64):
+    try:
+        from PIL import Image
+        import zxingcpp
+    except ImportError as error:
+        raise RuntimeError("This helper build does not include local QR decoding.") from error
+
+    try:
+        image_data = base64.b64decode(image_base64, validate=True)
+        image = Image.open(io.BytesIO(image_data))
+        results = zxingcpp.read_barcodes(image)
+    except Exception as error:
+        raise ValueError("The selected image could not be read as a QR code.") from error
+    if not results:
+        raise ValueError("No TOTP QR code was found in the selected image.")
+    return results[0].text
+
+
+def parse_totp_uri(uri):
+    parsed = urlparse(uri)
+    if parsed.scheme.lower() != "otpauth" or parsed.netloc.lower() != "totp":
+        raise ValueError("The selected QR code is not an otpauth TOTP token.")
+    parameters = parse_qs(parsed.query)
+    secret = parameters.get("secret", [""])[0].strip()
+    if not secret:
+        raise ValueError("The selected TOTP QR code has no secret.")
+    try:
+        digits = int(parameters.get("digits", ["6"])[0])
+        period = int(parameters.get("period", ["30"])[0])
+    except ValueError as error:
+        raise ValueError("The selected TOTP QR code has invalid settings.") from error
+    if digits < 1 or period < 1:
+        raise ValueError("The selected TOTP QR code has invalid settings.")
+    algorithm = parameters.get("algorithm", ["SHA-1"])[0].upper()
+    digest_name = algorithm.lower().replace("-", "")
+    if not hasattr(hashlib, digest_name):
+        raise ValueError("The selected TOTP QR code uses an unsupported algorithm.")
+    label = unquote(parsed.path.lstrip("/")) or "RWTH Token"
+    return {
+        "secret": secret,
+        "algorithm": algorithm,
+        "digits": digits,
+        "period": period,
+        "label": label,
+    }
+
+
+def preview_import():
+    if not PENDING_TOTP_IMPORT:
+        raise ValueError("Select the Token QR image again.")
+    return {
+        "ok": True,
+        "token_label": PENDING_TOTP_IMPORT["label"],
+        "code": current_totp_code(
+            PENDING_TOTP_IMPORT["secret"],
+            PENDING_TOTP_IMPORT["digits"],
+            PENDING_TOTP_IMPORT["period"],
+            PENDING_TOTP_IMPORT["algorithm"],
+        ),
+        "period": PENDING_TOTP_IMPORT["period"],
+    }
+
+
+def import_token_qr(message):
+    global PENDING_TOTP_IMPORT
+    image_base64 = message.get("image_base64", "")
+    if not image_base64:
+        raise ValueError("Select a Token QR image.")
+    PENDING_TOTP_IMPORT = parse_totp_uri(decode_otpauth_from_image(image_base64))
+    return preview_import()
+
+
 def configure(message):
+    global PENDING_TOTP_IMPORT
+    if message.get("use_imported_token"):
+        if not PENDING_TOTP_IMPORT:
+            raise ValueError("Select the Token QR image again.")
+        message = {
+            **message,
+            "totp_secret": PENDING_TOTP_IMPORT["secret"],
+            "totp_algorithm": PENDING_TOTP_IMPORT["algorithm"],
+            "totp_digits": PENDING_TOTP_IMPORT["digits"],
+            "totp_period": PENDING_TOTP_IMPORT["period"],
+        }
     fields = ("username", "password", "totp_secret", "totp_algorithm", "totp_digits", "totp_period", "token_label")
     saved = {}
     for field in fields:
@@ -141,6 +229,7 @@ def configure(message):
         saved[field] = str(value)
     vault_write(LOGIN_DATA_NAME, json.dumps(saved))
     SESSION_CACHE[LOGIN_DATA_NAME] = saved
+    PENDING_TOTP_IMPORT = None
     return {"ok": True}
 
 
@@ -169,6 +258,10 @@ def handle(message):
         data = login_data()
         return {"code": current_totp_code(data["totp_secret"], data["totp_digits"],
                                              data["totp_period"], data["totp_algorithm"])}
+    if action == "import_token_qr":
+        return import_token_qr(message)
+    if action == "get_imported_totp":
+        return preview_import()
     if action == "get_helper_status":
         return {"ok": True, "platform": sys.platform}
     raise ValueError("Unsupported action.")

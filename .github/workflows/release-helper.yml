@@ -33,7 +33,7 @@ jobs:
     runs-on: ${{ matrix.runner }}
     steps:
       - uses: actions/checkout@v4
-      - run: python -m pip install pyinstaller
+      - run: python -m pip install pyinstaller pillow zxing-cpp
       - run: python -m unittest native_host/tests/test_session_cache.py
       - run: test "$(uname -m)" = "${{ matrix.expected_arch }}"
         if: runner.os == 'macOS'

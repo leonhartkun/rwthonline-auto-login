@@ -1,5 +1,3 @@
-import { generate_totp, parse_otpauth_uri } from "./totp.mjs";
-
 const form = document.getElementById("onboarding_form");
 const username_input = document.getElementById("username");
 const password_input = document.getElementById("password");
@@ -15,7 +13,8 @@ const copy_install_command = document.getElementById("copy_install_command");
 const release_base_url = "https://github.com/leonhartkun/rwthonline-auto-login/releases/latest/download";
 const repository_url = "https://github.com/leonhartkun/rwthonline-auto-login";
 let helper_installed = false;
-let preview_totp_configuration;
+let imported_token_ready = false;
+let imported_token_period = 30;
 
 function set_status(message, type = "") {
   status_element.textContent = message;
@@ -36,45 +35,38 @@ function setup_install_command() {
   });
 }
 
-async function decode_local_qr(file) {
-  if (!("BarcodeDetector" in window)) {
-    throw new Error("当前 Chrome 不支持本地二维码解析。请升级 Chrome 后重试。");
-  }
-  const supported_formats = await BarcodeDetector.getSupportedFormats();
-  if (!supported_formats.includes("qr_code")) {
-    throw new Error("当前 Chrome 不支持二维码解析。请升级 Chrome 后重试。");
-  }
-
-  const detector = new BarcodeDetector({ formats: ["qr_code"] });
-  const image = await createImageBitmap(file);
-  try {
-    const results = await detector.detect(image);
-    if (results.length === 0) {
-      throw new Error("未在图片中识别到二维码。请使用清晰的 Token 二维码截图。");
-    }
-    return results[0].rawValue;
-  } finally {
-    image.close();
-  }
-}
-
 async function refresh_verification_code() {
-  if (!preview_totp_configuration) return;
-  const { secret, algorithm, digits, period } = preview_totp_configuration;
-  verification_code.textContent = await generate_totp(secret, Date.now(), { algorithm, digits, period });
-  const seconds_remaining = period - (Math.floor(Date.now() / 1_000) % period);
+  if (!imported_token_ready) return;
+  const response = await send_background({ action: "get_imported_totp" });
+  if (!response?.ok) {
+    imported_token_ready = false;
+    token_preview.hidden = true;
+    throw new Error(response?.error || "无法读取当前验证码。");
+  }
+  imported_token_period = response.period || imported_token_period;
+  verification_code.textContent = response.code;
+  const seconds_remaining = imported_token_period - (Math.floor(Date.now() / 1_000) % imported_token_period);
   verification_countdown.textContent = `${seconds_remaining} 秒后更新`;
 }
 
 token_qr_input.addEventListener("change", async () => {
   token_preview.hidden = true;
-  preview_totp_configuration = undefined;
+  imported_token_ready = false;
   const selected_file = token_qr_input.files[0];
   if (!selected_file) return;
 
   try {
-    preview_totp_configuration = parse_otpauth_uri(await decode_local_qr(selected_file));
-    await refresh_verification_code();
+    const image_base64 = await file_to_base64(selected_file);
+    const response = await send_background({ action: "import_token_qr", image_base64 });
+    if (!response?.ok) {
+      throw new Error(response?.error || "未能读取 Token 二维码。请使用清晰的二维码截图。");
+    }
+    imported_token_ready = true;
+    imported_token_period = response.period || 30;
+    token_label_input.value = response.token_label || token_label_input.value;
+    verification_code.textContent = response.code;
+    const seconds_remaining = imported_token_period - (Math.floor(Date.now() / 1_000) % imported_token_period);
+    verification_countdown.textContent = `${seconds_remaining} 秒后更新`;
     token_preview.hidden = false;
   } catch (error) {
     set_status(error.message, "error");
@@ -83,6 +75,15 @@ token_qr_input.addEventListener("change", async () => {
 
 function send_background(message) {
   return new Promise((resolve) => chrome.runtime.sendMessage(message, resolve));
+}
+
+function file_to_base64(file) {
+  return new Promise((resolve, reject) => {
+    const reader = new FileReader();
+    reader.addEventListener("error", () => reject(new Error("无法读取所选二维码图片。")));
+    reader.addEventListener("load", () => resolve(String(reader.result).split(",", 2)[1]));
+    reader.readAsDataURL(file);
+  });
 }
 
 async function check_helper_status() {
@@ -109,19 +110,15 @@ form.addEventListener("submit", async (event) => {
     if (!helper_installed) {
       throw new Error("请先完成本机助手安装。");
     }
-    if (!selected_file || !password_input.value) {
-      throw new Error("请填写密码并选择 Token 二维码图片。");
+    if (!selected_file || !password_input.value || !imported_token_ready) {
+      throw new Error("请填写密码，并先选择可读取的 Token 二维码图片。");
     }
-    const totp_configuration = parse_otpauth_uri(await decode_local_qr(selected_file));
     const response = await send_background({
       action: "configure_credentials",
       username: username_input.value,
       password: password_input.value,
-      totp_secret: totp_configuration.secret,
-      totp_algorithm: totp_configuration.algorithm,
-      totp_digits: totp_configuration.digits,
-      totp_period: totp_configuration.period,
       token_label: token_label_input.value.trim(),
+      use_imported_token: true,
     });
     if (!response?.ok) {
       throw new Error(response?.error || "无法保存到系统保险库。");
@@ -129,6 +126,7 @@ form.addEventListener("submit", async (event) => {
     await chrome.storage.local.set({ token_label: token_label_input.value.trim() });
     password_input.value = "";
     token_qr_input.value = "";
+    imported_token_ready = false;
     set_status("已保存。正在关闭设置页…", "success");
     setTimeout(() => send_background({ action: "close_onboarding" }), 600);
   } catch (error) {

@@ -68,6 +68,50 @@ class SessionCacheTest(unittest.TestCase):
 
         self.assertEqual(host.handle({"action": "get_login_data"})["token_label"], message["token_label"])
 
+    def test_import_token_qr_keeps_secret_out_of_response(self):
+        with patch.object(
+            host,
+            "decode_otpauth_from_image",
+            return_value="otpauth://totp/RWTH:test?secret=JBSWY3DPEHPK3PXP",
+        ):
+            response = host.handle({"action": "import_token_qr", "image_base64": "cG5n"})
+
+        self.assertTrue(response["ok"])
+        self.assertIn("code", response)
+        self.assertEqual(response["token_label"], "RWTH:test")
+        self.assertNotIn("totp_secret", response)
+
+    def test_get_imported_totp_requires_an_import(self):
+        with self.assertRaisesRegex(ValueError, "Select the Token QR image again"):
+            host.handle({"action": "get_imported_totp"})
+
+    def test_import_rejects_a_non_totp_uri(self):
+        with patch.object(host, "decode_otpauth_from_image", return_value="https://example.invalid"):
+            with self.assertRaisesRegex(ValueError, "otpauth"):
+                host.handle({"action": "import_token_qr", "image_base64": "cG5n"})
+
+    def test_configure_consumes_pending_import_without_receiving_secret(self):
+        host.PENDING_TOTP_IMPORT = {
+            "secret": "JBSWY3DPEHPK3PXP",
+            "algorithm": "SHA-1",
+            "digits": 6,
+            "period": 30,
+            "label": "RWTH:test",
+        }
+        message = {
+            "action": "configure_credentials",
+            "username": "alice",
+            "password": "secret",
+            "token_label": "test",
+            "use_imported_token": True,
+        }
+        with patch.object(host, "vault_write") as write:
+            response = host.handle(message)
+
+        self.assertEqual(response, {"ok": True})
+        self.assertTrue(any("JBSWY3DPEHPK3PXP" in str(call) for call in write.call_args_list))
+        self.assertIsNone(host.PENDING_TOTP_IMPORT)
+
 
 if __name__ == "__main__":
     unittest.main()
