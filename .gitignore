@@ -1,3 +1,4 @@
 extension_key.pem
 native_host/host.log
 .DS_Store
+autologin/
