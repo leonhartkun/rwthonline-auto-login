@@ -10,7 +10,8 @@ const status_element = document.getElementById("status");
 const helper_setup = document.getElementById("helper_setup");
 const helper_title = document.getElementById("helper_title");
 const copy_install_command = document.getElementById("copy_install_command");
-const release_base_url = "https://github.com/leonhartkun/rwthonline-auto-login/releases/latest/download";
+const release_tag = `v${chrome.runtime.getManifest().version}`;
+const release_base_url = `https://github.com/leonhartkun/rwthonline-auto-login/releases/download/${release_tag}`;
 const repository_url = "https://github.com/leonhartkun/rwthonline-auto-login";
 let helper_installed = false;
 let imported_token_ready = false;
@@ -25,8 +26,8 @@ function setup_install_command() {
   const extension_id = chrome.runtime.id;
   const is_windows = navigator.platform.toLowerCase().includes("win");
   const command = is_windows
-    ? `irm ${release_base_url}/install_windows.ps1 | iex; Install-RwthonlineHelper -ExtensionId ${extension_id}`
-    : `curl -fsSL ${release_base_url}/install_macos.sh | sh -s -- ${extension_id}`;
+    ? `$env:RWTH_RELEASE_TAG='${release_tag}'; irm ${release_base_url}/install_windows.ps1 | iex; Install-RwthonlineHelper -ExtensionId ${extension_id}`
+    : `curl -fsSL ${release_base_url}/install_macos.sh | RWTH_RELEASE_TAG=${release_tag} sh -s -- ${extension_id}`;
   document.getElementById("install_command").textContent = command;
   document.getElementById("source_link").href = repository_url;
   copy_install_command.addEventListener("click", async () => {

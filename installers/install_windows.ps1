@@ -6,8 +6,9 @@ function Install-RwthonlineHelper {
   $manifestPath = Join-Path $installDir 'com.rwthonline.auto_login.json'
   New-Item -ItemType Directory -Force -Path $installDir | Out-Null
   $downloader = New-Object System.Net.WebClient
+  $releaseTag = if ($env:RWTH_RELEASE_TAG) { $env:RWTH_RELEASE_TAG } else { 'latest' }
   $downloader.DownloadFile(
-    'https://github.com/leonhartkun/rwthonline-auto-login/releases/latest/download/rwthonline_native_host_windows.exe',
+    "https://github.com/leonhartkun/rwthonline-auto-login/releases/download/$releaseTag/rwthonline_native_host_windows.exe",
     $helperPath
   )
   if (-not (Test-Path $helperPath)) {

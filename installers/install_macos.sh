@@ -7,7 +7,8 @@ case "$(uname -m)" in
   x86_64) helper_asset="rwthonline_native_host_macos_x86_64.zip" ;;
   *) printf '%s\n' "Unsupported Mac processor: $(uname -m)" >&2; exit 1 ;;
 esac
-release_url="https://github.com/leonhartkun/rwthonline-auto-login/releases/latest/download/$helper_asset"
+release_tag=${RWTH_RELEASE_TAG:-latest}
+release_url="https://github.com/leonhartkun/rwthonline-auto-login/releases/download/$release_tag/$helper_asset"
 install_dir="$HOME/Library/Application Support/RWTHonlineAutoLogin"
 manifest_dir="$HOME/Library/Application Support/Google/Chrome/NativeMessagingHosts"
 
