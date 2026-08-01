@@ -64,7 +64,6 @@ token_qr_input.addEventListener("change", async () => {
     }
     imported_token_ready = true;
     imported_token_period = response.period || 30;
-    token_label_input.value = response.token_label || token_label_input.value;
     verification_code.textContent = response.code;
     const seconds_remaining = imported_token_period - (Math.floor(Date.now() / 1_000) % imported_token_period);
     verification_countdown.textContent = `${seconds_remaining} 秒后更新`;

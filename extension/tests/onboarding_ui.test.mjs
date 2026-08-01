@@ -43,6 +43,12 @@ test("onboarding stores a user-configured Token label for exact selection", asyn
   assert.match(source, /token_label:/);
 });
 
+test("QR import never overwrites the Token label selected by the user", async () => {
+  const source = await readFile(new URL("../onboarding.js", import.meta.url), "utf8");
+
+  assert.doesNotMatch(source, /token_label_input\.value\s*=\s*response\.token_label/);
+});
+
 test("onboarding delegates QR import and verification-code preview to the native helper", async () => {
   const [html, source] = await Promise.all([
     readFile(new URL("../onboarding.html", import.meta.url), "utf8"),
