@@ -2,10 +2,11 @@ function Install-RwthonlineHelper {
   param([Parameter(Mandatory=$true)][string]$ExtensionId)
   $ErrorActionPreference = 'Stop'
   $installDir = Join-Path $env:LOCALAPPDATA 'RWTHonlineAutoLogin'
-  $helperPath = Join-Path $installDir 'rwthonline_native_host.exe'
+  $releaseTag = if ($env:RWTH_RELEASE_TAG) { $env:RWTH_RELEASE_TAG } else { 'latest' }
+  $safeReleaseTag = $releaseTag -replace '[^A-Za-z0-9._-]', '_'
+  $helperPath = Join-Path $installDir "rwthonline_native_host_$safeReleaseTag.exe"
   $manifestPath = Join-Path $installDir 'com.rwthonline.auto_login.json'
   New-Item -ItemType Directory -Force -Path $installDir | Out-Null
-  $releaseTag = if ($env:RWTH_RELEASE_TAG) { $env:RWTH_RELEASE_TAG } else { 'latest' }
   $downloadUrl = "https://github.com/leonhartkun/rwthonline-auto-login/releases/download/$releaseTag/rwthonline_native_host_windows.exe"
   $temporaryHelperPath = "$helperPath.download"
   Remove-Item -Force -ErrorAction SilentlyContinue $temporaryHelperPath
