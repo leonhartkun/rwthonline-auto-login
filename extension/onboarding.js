@@ -64,6 +64,7 @@ token_qr_input.addEventListener("change", async () => {
     }
     imported_token_ready = true;
     imported_token_period = response.period || 30;
+    token_label_input.value = response.token_label;
     verification_code.textContent = response.code;
     const seconds_remaining = imported_token_period - (Math.floor(Date.now() / 1_000) % imported_token_period);
     verification_countdown.textContent = `${seconds_remaining} 秒后更新`;
@@ -110,7 +111,7 @@ form.addEventListener("submit", async (event) => {
     if (!helper_installed) {
       throw new Error("请先完成本机助手安装。");
     }
-    if (!selected_file || !password_input.value || !imported_token_ready) {
+    if (!selected_file || !password_input.value || !imported_token_ready || !token_label_input.value) {
       throw new Error("请填写密码，并先选择可读取的 Token 二维码图片。");
     }
     const response = await send_background({

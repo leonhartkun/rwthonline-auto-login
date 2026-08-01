@@ -82,7 +82,7 @@
       </div>
 
       <section class="setup_guide" aria-label="Token 设置说明">
-        <p>请先在 <a href="https://idm.rwth-aachen.de/selfservice/MFATokenManager?2" target="_blank" rel="noreferrer">RWTH IDM Self Service</a> 创建你的 Token，并记下登录页下拉框中显示的完整名称、保存二维码图片。将二维码上传到这里后会显示当前验证码；把它填回 IDM 页面完成验证。随后填写 RWTH 用户名和密码并保存——这些信息只保存在本机系统保险库，不会上传。保存后刷新 RWTH 登录页即可使用自动登录。</p>
+        <p>请先在 <a href="https://idm.rwth-aachen.de/selfservice/MFATokenManager?2" target="_blank" rel="noreferrer">RWTH IDM Self Service</a> 创建你的 Token 并保存二维码图片。将二维码上传到这里后会自动识别 Token 名称并显示当前验证码；把验证码填回 IDM 页面完成验证。随后填写 RWTH 用户名和密码并保存——这些信息只保存在本机系统保险库，不会上传。保存后刷新 RWTH 登录页即可使用自动登录。</p>
       </section>
 
       <section id="helper_setup" aria-label="本机助手安装">
@@ -105,9 +105,9 @@
           <input id="password" name="password" type="password" autocomplete="current-password" required>
         </div>
         <div class="field">
-          <label for="token_label">RWTH Token 名称</label>
-          <input id="token_label" name="token_label" value="Selfload" required>
-          <small>填写 RWTH 登录页下拉框中显示的完整名称；之后可在“重新配置”中修改。</small>
+          <label for="token_label">自动识别的 Token 名称</label>
+          <input id="token_label" name="token_label" placeholder="上传二维码后自动识别" readonly required>
+          <small>名称来自二维码，用于自动选择 RWTH 登录页上的对应 Token。</small>
         </div>
         <div class="qr_upload">
           <label for="token_qr">Token 二维码图片</label>
