@@ -5,12 +5,15 @@ function Install-RwthonlineHelper {
   $helperPath = Join-Path $installDir 'rwthonline_native_host.exe'
   $manifestPath = Join-Path $installDir 'com.rwthonline.auto_login.json'
   New-Item -ItemType Directory -Force -Path $installDir | Out-Null
-  $downloader = New-Object System.Net.WebClient
   $releaseTag = if ($env:RWTH_RELEASE_TAG) { $env:RWTH_RELEASE_TAG } else { 'latest' }
-  $downloader.DownloadFile(
-    "https://github.com/leonhartkun/rwthonline-auto-login/releases/download/$releaseTag/rwthonline_native_host_windows.exe",
-    $helperPath
-  )
+  $downloadUrl = "https://github.com/leonhartkun/rwthonline-auto-login/releases/download/$releaseTag/rwthonline_native_host_windows.exe"
+  $temporaryHelperPath = "$helperPath.download"
+  Remove-Item -Force -ErrorAction SilentlyContinue $temporaryHelperPath
+  & curl.exe -fL --retry 3 --connect-timeout 20 --max-time 180 -o $temporaryHelperPath $downloadUrl
+  if ($LASTEXITCODE -ne 0) {
+    throw "RWTHonline helper download failed (curl exit code $LASTEXITCODE)."
+  }
+  Move-Item -Force $temporaryHelperPath $helperPath
   if (-not (Test-Path $helperPath)) {
     throw 'RWTHonline helper download did not produce an executable.'
   }
