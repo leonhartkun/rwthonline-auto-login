@@ -2,6 +2,12 @@ import assert from "node:assert/strict";
 import { readFile } from "node:fs/promises";
 import test from "node:test";
 
+test("manifest does not request the unnecessary tabs permission", async () => {
+  const manifest = JSON.parse(await readFile(new URL("../manifest.json", import.meta.url), "utf8"));
+
+  assert.deepEqual(manifest.permissions, ["nativeMessaging", "storage"]);
+});
+
 test("background keeps a native messaging port instead of one-shot helper calls", async () => {
   const background = await readFile(new URL("../background.js", import.meta.url), "utf8");
 
